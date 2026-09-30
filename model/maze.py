@@ -18,6 +18,26 @@ class Maze:
     def has_wall(self, position: Position, direction: Direction) -> bool:
         return self.get_cell(position).has_Wall(direction)
 
+    def can_move(self, position: Position, direction: Direction) -> bool:
+        if self.has_wall(position, direction) is True:
+            return False
+        if direction == Direction.NORTH:
+            if self.has_wall(Position(position.x, position.y - 1), Direction.SOUTH):
+                return False
+            return True
+        elif direction == Direction.EAST:
+            if self.has_wall(Position(position.x + 1, position.y), Direction.WEST):
+                return False
+            return True
+        elif direction == Direction.SOUTH:
+            if self.has_wall((position.x, position.y + 1), Direction.NORTH):
+                return False
+            return True
+        elif direction == Direction.WEST:
+            if self.has_wall(Position(position.x - 1, position.y), Direction.EAST):
+                return False
+            return True
+
 
 generator = MazeGenerator()
 maze = Maze(generator.maze)
