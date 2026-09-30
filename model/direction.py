@@ -1,7 +1,8 @@
 from enum import Enum
 
+
 class Direction(Enum):
-    NORTH = "N"
-    EAST = "E"
-    WEST = "W"
-    SOUTH = "S"
+    NORTH = 1
+    EAST = 2
+    WEST = 4
+    SOUTH = 8
