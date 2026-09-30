@@ -9,7 +9,9 @@ class Pacman:
         self.lives = lives
 
 
-mk = Pacman(Direction.EAST, Position(4, 1))
-print(mk.direction)
-print(mk.position)
-print(mk.lives)
+# ====== Test =======
+
+# mk = Pacman(Direction.EAST, Position(4, 1))
+# print(mk.direction)
+# print(mk.position)
+# print(mk.lives)

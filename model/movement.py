@@ -2,6 +2,7 @@ from model.pacman import Pacman
 from model.maze import Maze
 from model.position import Position
 from model.direction import Direction
+from mazegenerator import MazeGenerator
 
 
 class Movement:
@@ -20,3 +21,18 @@ class Movement:
             return None
         new_position = self.get_next_position(pacman.position, pacman.direction)
         pacman.position = new_position
+
+
+if __name__ == "__main__":
+    generator = MazeGenerator()
+    maze = Maze(generator.maze)
+
+    pacman = Pacman(Direction.EAST, Position(0, 0))
+    movement = Movement()
+
+    print("Before:", pacman.position)
+    print("Can move:", maze.can_move(pacman.position, pacman.direction))
+
+    movement.move(pacman, maze)
+
+    print("After:", pacman.position)

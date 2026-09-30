@@ -46,6 +46,8 @@ def print_maze(grid):
     print("+")
 
 
+# ====== Test =======
+
 generator = MazeGenerator()
 
 print_maze(generator.maze)
