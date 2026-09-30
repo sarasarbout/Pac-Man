@@ -5,7 +5,7 @@ from mazegenerator import MazeGenerator
 
 
 class Maze:
-    def __init__(self, grid: list[list[int]]):
+    def __init__(self, grid: list[list[int]]) -> None:
         self.width = len(grid[0])   # cells inside row
         self.height = len(grid)    # rows
         self.cells = [
@@ -38,6 +38,7 @@ class Maze:
             return False
 
         return True
+
 
 generator = MazeGenerator()
 maze = Maze(generator.maze)

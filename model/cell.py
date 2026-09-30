@@ -2,7 +2,7 @@ from model.direction import Direction
 
 
 class Cell:
-    def __init__(self, walls: int):
+    def __init__(self, walls: int) -> None:
         self.walls = walls
 
     def has_Wall(self, direction: Direction) -> bool:
