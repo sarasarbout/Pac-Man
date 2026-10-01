@@ -12,8 +12,9 @@ class Collision:
         return pacman.position == ghost.position
 
 
-pacman = Pacman(Direction.EAST, Position(4, 1))
-ghost = Ghost(GhostName.BLINKY, Position(0, 1), Direction.SOUTH, Color.RED, GhostMode.CHASE)
+# ==== Test ====
+# pacman = Pacman(Direction.EAST, Position(4, 1))
+# ghost = Ghost(GhostName.BLINKY, Position(0, 1), Direction.SOUTH, Color.RED, GhostMode.CHASE)
 
-collision = Collision()
-print(collision.check(pacman,  ghost))
+# collision = Collision()
+# print(collision.check(pacman,  ghost))
