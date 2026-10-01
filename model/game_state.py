@@ -42,7 +42,7 @@ class Rules:
                 state.pacman.score += 200
 
     def check_game_over(self, state: GameState):
-        return (state.pacman.lives <= 0)
+        return state.pacman.lives <= 0
 
     def check_win(self, state: GameState):
         pass
