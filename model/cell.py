@@ -5,7 +5,7 @@ from enum import Enum
 class Dots(Enum):
     SMALL = 1
     BIG = 2
-    NONE
+    NONE = 3
 
 
 class Cell:
