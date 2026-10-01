@@ -23,7 +23,6 @@ class GameState:
         self.status = status
         self.ghost_eaten_count = ghost_eaten_count
 
-
 class Rules:
     def check_collision(self, state: GameState) -> Ghost | None:
         collision = Collision()
@@ -45,4 +44,4 @@ class Rules:
         return state.pacman.lives <= 0
 
     def check_win(self, state: GameState):
-        pass
+        if 
