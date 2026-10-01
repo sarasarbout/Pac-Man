@@ -2,7 +2,7 @@ from enum import Enum
 from model.pacman import Pacman
 from model.ghost import Ghost
 from game.collision import Collision
-from game.collision import GhostMode
+from model.ghost import GhostMode
 
 
 class GameStatus(Enum):
@@ -20,7 +20,7 @@ class GameState:
     ) -> None:
         self.pacman = pacman
         self.ghosts = ghosts
-        self.status = GameStatus
+        self.status = status
         self.ghost_eaten_count = ghost_eaten_count
 
 
@@ -41,9 +41,8 @@ class Rules:
                 state.ghost_eaten_count += 1
                 state.pacman.score += 200
 
-
     def check_game_over(self, state: GameState):
-        pass
+        return (state.pacman.lives <= 0)
 
     def check_win(self, state: GameState):
         pass
