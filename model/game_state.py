@@ -2,6 +2,7 @@ from enum import Enum
 from model.pacman import Pacman
 from model.ghost import Ghost
 from game.collision import Collision
+from game.collision import GhostMode
 
 
 class GameStatus(Enum):
@@ -13,11 +14,14 @@ class GameStatus(Enum):
 
 
 class GameState:
-    def __init__(self, pacman: Pacman, ghosts: list[Ghost], status: GameStatus.READY, score: 0) -> None:
+    def __init__(
+            self, pacman: Pacman, ghosts: list[Ghost],
+            status: GameStatus = GameStatus.READY, ghost_eaten_count: int = 0
+    ) -> None:
         self.pacman = pacman
         self.ghosts = ghosts
-        self.status = status
-        self.score = score
+        self.status = GameStatus
+        self.ghost_eaten_count = ghost_eaten_count
 
 
 class Rules:
@@ -29,10 +33,13 @@ class Rules:
         return None
 
     def handle_collision(self, state: GameState) -> None:
-        ghost = state.check_collision(state)
+        ghost = self.check_collision(state)
         if ghost:
-            if ghost.mode != state.FRIGHTENED:
+            if ghost.mode != GhostMode.FRIGHTENED:
                 state.pacman.lives -= 1
+            else:
+                state.ghost_eaten_count += 1
+                state.pacman.score += 200
 
 
     def check_game_over(self, state: GameState):

@@ -3,10 +3,11 @@ from model.direction import Direction
 
 
 class Pacman:
-    def __init__(self, direction: Direction, position: Position, lives: int = 3):
+    def __init__(self, direction: Direction, position: Position, lives: int = 3 , score: int = 0):
         self.direction = direction
         self.position = position
         self.lives = lives
+        self.score = score
 
 
 # ====== Test =======
