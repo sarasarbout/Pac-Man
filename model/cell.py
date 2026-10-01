@@ -5,7 +5,7 @@ class Cell:
     def __init__(self, walls: int) -> None:
         self.walls = walls
 
-    def has_Wall(self, direction: Direction) -> bool:
+    def has_wall(self, direction: Direction) -> bool:
         return (self.walls & direction.value) != 0
 
 

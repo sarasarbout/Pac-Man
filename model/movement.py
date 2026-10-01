@@ -43,7 +43,7 @@ if __name__ == "__main__":
     ]
     maze = Maze(grid)
 
-    pacman = Pacman(Direction.EAST, Position(11, 0))
+    pacman = Pacman(Direction.EAST, Position(0, 1))
     movement = Movement()
 
     print("Before:", pacman.position)

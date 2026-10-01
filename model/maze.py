@@ -16,7 +16,7 @@ class Maze:
         return self.cells[position.y][position.x]
 
     def has_wall(self, position: Position, direction: Direction) -> bool:
-        return self.get_cell(position).has_Wall(direction)
+        return self.get_cell(position).has_wall(direction)
 
     def can_move(self, position: Position, direction: Direction) -> bool:
         if self.has_wall(position, direction):
@@ -40,12 +40,13 @@ class Maze:
         return True
 
 
-generator = MazeGenerator()
-maze = Maze(generator.maze)
+# ==== Test =====
+# generator = MazeGenerator()
+# maze = Maze(generator.maze)
 
-position = Position(0, 0)
+# position = Position(0, 0)
 
-print(maze.has_wall(position, Direction.NORTH))
-print(maze.has_wall(position, Direction.EAST))
-print(maze.has_wall(position, Direction.WEST))
-print(maze.has_wall(position, Direction.SOUTH))
+# print(maze.has_wall(position, Direction.NORTH))
+# print(maze.has_wall(position, Direction.EAST))
+# print(maze.has_wall(position, Direction.WEST))
+# print(maze.has_wall(position, Direction.SOUTH))
