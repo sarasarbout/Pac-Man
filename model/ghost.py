@@ -3,7 +3,7 @@ from model.position import Position
 from enum import Enum
 
 
-class COLOR(Enum):
+class Color(Enum):
     RED = 1
     PINK = 2
     CYAN = 3
@@ -28,7 +28,7 @@ class GhostName(Enum):
 
 
 class Ghost:
-    def __init__(self, name: GhostName, position: Position, direction: Direction, color: COLOR, mode: GhostMode):
+    def __init__(self, name: GhostName, position: Position, direction: Direction, color: Color, mode: GhostMode):
         self.position = position
         self.direction = direction
         self.color = color
@@ -38,9 +38,9 @@ class Ghost:
 
 # ======== Test ========
 
-ghost = Ghost(GhostName.BLINKY, Position(0, 1), Direction.SOUTH, COLOR.RED, GhostMode.CHASE)
-print(ghost.name)
-print(ghost.color)
-print(ghost.position)
-print(ghost.direction)
-print(ghost.mode)
+# ghost = Ghost(GhostName.BLINKY, Position(0, 1), Direction.SOUTH, COLOR.RED, GhostMode.CHASE)
+# print(ghost.name)
+# print(ghost.color)
+# print(ghost.position)
+# print(ghost.direction)
+# print(ghost.mode)
