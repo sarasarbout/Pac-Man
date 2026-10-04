@@ -1,0 +1,37 @@
+# Pac-Man configuration file
+# Lines starting with '#' are comments and are ignored by the parser.
+
+{
+  "highscore_filename": "highscores.json",
+  "lives": 3, #this is a comment
+  "seed": 42,
+  "level_max_time": 90,
+
+  "points_per_pacgum": 10,
+  "points_per_super_pacgum": 50,
+  "points_per_ghost": 200,
+
+  "levels": [
+    {
+      "name": "Level 1",
+      "width": 21,
+      "height": 21,
+      "pacgum": 42,
+      "ghosts": 4
+    },
+    {
+      "name": "Level 2",
+      "width": 25,
+      "height": 25,
+      "pacgum": 60,
+      "ghosts": 5
+    },
+    {
+      "name": "Level 3",
+      "width": 31,
+      "height": 27,
+      "pacgum": 80,
+      "ghosts": 6
+    }
+  ]
+}
