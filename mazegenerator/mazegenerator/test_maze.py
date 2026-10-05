@@ -22,8 +22,8 @@ def create_the_maze() -> None:
     menu_width = 400
     width = len(rows[0])
     height = len(rows)
-    pacman_x = 0
-    pacman_y = 0
+    pacman_x = 10
+    pacman_y = 10
     screen = pygame.display.set_mode((width * cell_size + menu_width, height * cell_size))
     maze_color = (255, 0, 0)
     pacman = pygame.image.load('/home/sasarbou/Desktop/Pac-Man/pacman-art/pacman-down/3.png')
@@ -34,30 +34,30 @@ def create_the_maze() -> None:
                 pygame.quit()
                 exit()
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_RIGHT] or keys[pygame.K_d] and not maze.has_wall(Position(pacman_x, pacman_y), (Direction.NORTH)):
+        if (keys[pygame.K_RIGHT] or keys[pygame.K_d]) and not maze.has_wall(Position(pacman_x, pacman_y), (Direction.EAST)):
             pacman_x += 0.6
-        if keys[pygame.K_LEFT] or keys[pygame.K_a]:
+        if (keys[pygame.K_LEFT] or keys[pygame.K_a]) and not maze.has_wall(Position(pacman_x, pacman_y), (Direction.WEST)):
             pacman_x -= 0.6
-        if keys[pygame.K_DOWN] or keys[pygame.K_s]:
+        if (keys[pygame.K_DOWN] or keys[pygame.K_s]) and not maze.has_wall(Position(pacman_x, pacman_y), (Direction.SOUTH)):
             pacman_y += 0.6
-        if keys[pygame.K_UP] or keys[pygame.K_w]:
+        if (keys[pygame.K_UP] or keys[pygame.K_w]) and not maze.has_wall(Position(pacman_x, pacman_y), (Direction.NORTH)):
             pacman_y -= 0.6
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                distance1 = math.dist((width * cell_size + 75, 100), event.pos)
-                if distance1 <= 25:
-                    maze_color = (255, 0, 0)
-                distance2 = math.dist((width * cell_size + 140, 100), event.pos)
-                if distance2 <= 25:
-                    maze_color = (0, 255, 0)
-                distance3 = math.dist((width * cell_size + 210, 100), event.pos)
-                if distance3 <= 25:
-                    maze_color = (0, 0, 255)
-                distance4 = math.dist((width * cell_size + 280, 100), event.pos)
-                if distance4 <= 25:
-                    maze_color = (255, 255, 0)
-                distance4 = math.dist((width * cell_size + 350, 100), event.pos)
-                if distance4 <= 25:
-                    maze_color = (255, 255, 255)
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            distance1 = math.dist((width * cell_size + 75, 100), event.pos)
+            if distance1 <= 25:
+                maze_color = (255, 0, 0)
+            distance2 = math.dist((width * cell_size + 140, 100), event.pos)
+            if distance2 <= 25:
+                maze_color = (0, 255, 0)
+            distance3 = math.dist((width * cell_size + 210, 100), event.pos)
+            if distance3 <= 25:
+                maze_color = (0, 0, 255)
+            distance4 = math.dist((width * cell_size + 280, 100), event.pos)
+            if distance4 <= 25:
+                maze_color = (255, 255, 0)
+            distance4 = math.dist((width * cell_size + 350, 100), event.pos)
+            if distance4 <= 25:
+                maze_color = (255, 255, 255)
 
         screen.fill((0, 0, 0))
         pygame.draw.rect(
