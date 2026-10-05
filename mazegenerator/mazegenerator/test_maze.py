@@ -56,7 +56,7 @@ def create_the_maze() -> None:
                 if rows[row][column] == 15:
                     pygame.draw.rect(
                         screen,
-                        (maze_color),
+                        (255, 255, 255),
                         (x, y, cell_size, cell_size)
                     )
                 if rows[row][column] & NORTH:
