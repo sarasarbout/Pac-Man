@@ -29,15 +29,15 @@ def create_the_maze() -> None:
             if event.type == pygame.QUIT:
                 pygame.quit()
                 exit()
-            keys = pygame.key.get_pressed()   # ===> start here <===
-            if keys[pygame.K_RIGHT]:
-                pacman_x += 10
-            if keys[pygame.K_LEFT]:
-                pacman_x -= 10
-            if keys[pygame.K_DOWN]:
-                pacman_y += 10
-            if keys[pygame.K_UP]:
-                pacman_y -= 10
+        keys = pygame.key.get_pressed()   # ===> start here <===
+        if keys[pygame.K_RIGHT]:
+            pacman_x += 0.6
+        if keys[pygame.K_LEFT]:
+            pacman_x -= 0.6
+        if keys[pygame.K_DOWN]:
+            pacman_y += 0.6
+        if keys[pygame.K_UP]:
+            pacman_y -= 0.6
             if event.type == pygame.MOUSEBUTTONDOWN:
                 distance1 = math.dist((width * cell_size + 75, 100), event.pos)
                 if distance1 <= 25:
