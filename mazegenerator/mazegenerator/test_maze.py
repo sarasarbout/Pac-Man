@@ -22,8 +22,9 @@ def create_the_maze() -> None:
     menu_width = 400
     width = len(rows[0])
     height = len(rows)
-    pacman_x = 10
-    pacman_y = 10
+    pacman_position = Position(0, 0)
+    pacman_x = pacman_position.x
+    pacman_y = pacman_position.y
     screen = pygame.display.set_mode((width * cell_size + menu_width, height * cell_size))
     maze_color = (255, 0, 0)
     pacman = pygame.image.load('/home/sasarbou/Desktop/Pac-Man/pacman-art/pacman-down/3.png')
@@ -34,14 +35,18 @@ def create_the_maze() -> None:
                 pygame.quit()
                 exit()
         keys = pygame.key.get_pressed()
-        if (keys[pygame.K_RIGHT] or keys[pygame.K_d]) and not maze.has_wall(Position(pacman_x, pacman_y), (Direction.EAST)):
-            pacman_x += 0.6
-        if (keys[pygame.K_LEFT] or keys[pygame.K_a]) and not maze.has_wall(Position(pacman_x, pacman_y), (Direction.WEST)):
-            pacman_x -= 0.6
-        if (keys[pygame.K_DOWN] or keys[pygame.K_s]) and not maze.has_wall(Position(pacman_x, pacman_y), (Direction.SOUTH)):
-            pacman_y += 0.6
-        if (keys[pygame.K_UP] or keys[pygame.K_w]) and not maze.has_wall(Position(pacman_x, pacman_y), (Direction.NORTH)):
-            pacman_y -= 0.6
+        if keys[pygame.K_RIGHT] or keys[pygame.K_d] and not maze.has_wall(pacman_position, Direction.EAST):
+            pacman_x += 2
+        if (keys[pygame.K_LEFT] or keys[pygame.K_a]) and not maze.has_wall(pacman_position, (Direction.WEST)):
+            pacman_x -= 2
+        if (keys[pygame.K_DOWN] or keys[pygame.K_s]) and not maze.has_wall(pacman_position, (Direction.SOUTH)):
+            pacman_y += 2
+        if (keys[pygame.K_UP] or keys[pygame.K_w]) and not maze.has_wall(pacman_position, (Direction.NORTH)):
+            pacman_y -= 2
+        pacman_position = Position(
+            int(pacman_x // cell_size),
+            int(pacman_y // cell_size)
+        )
         if event.type == pygame.MOUSEBUTTONDOWN:
             distance1 = math.dist((width * cell_size + 75, 100), event.pos)
             if distance1 <= 25:
