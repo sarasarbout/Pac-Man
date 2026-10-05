@@ -35,18 +35,26 @@ def create_the_maze() -> None:
                 pygame.quit()
                 exit()
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_RIGHT] or keys[pygame.K_d] and not maze.has_wall(pacman_position, Direction.EAST):
-            pacman_x += 2
-        if (keys[pygame.K_LEFT] or keys[pygame.K_a]) and not maze.has_wall(pacman_position, (Direction.WEST)):
-            pacman_x -= 2
-        if (keys[pygame.K_DOWN] or keys[pygame.K_s]) and not maze.has_wall(pacman_position, (Direction.SOUTH)):
-            pacman_y += 2
-        if (keys[pygame.K_UP] or keys[pygame.K_w]) and not maze.has_wall(pacman_position, (Direction.NORTH)):
-            pacman_y -= 2
         pacman_position = Position(
             int(pacman_x // cell_size),
             int(pacman_y // cell_size)
         )
+        if (keys[pygame.K_RIGHT] or keys[pygame.K_d]) and maze.can_move(
+            pacman_position, Direction.EAST
+        ):
+            pacman_x += 1
+        if (keys[pygame.K_LEFT] or keys[pygame.K_a]) and maze.can_move(
+            pacman_position, (Direction.WEST)
+        ):
+            pacman_x -= 1
+        if (keys[pygame.K_DOWN] or keys[pygame.K_s]) and maze.can_move(
+            pacman_position, (Direction.SOUTH)
+        ):
+            pacman_y += 1
+        if (keys[pygame.K_UP] or keys[pygame.K_w]) and maze.can_move(
+            pacman_position, (Direction.NORTH)
+        ):
+            pacman_y -= 1
         if event.type == pygame.MOUSEBUTTONDOWN:
             distance1 = math.dist((width * cell_size + 75, 100), event.pos)
             if distance1 <= 25:
