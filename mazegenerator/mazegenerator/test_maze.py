@@ -2,6 +2,9 @@ from mazegenerator import MazeGenerator
 import pygame
 from sys import exit
 import math
+from model.maze import Maze
+from model.position import Position
+from model.direction import Direction
 
 
 def create_the_maze() -> None:
@@ -10,6 +13,7 @@ def create_the_maze() -> None:
         print(row)
     pygame.init()
     cell_size = 60
+    maze = Maze(generator.maze)
     rows = generator.maze
     NORTH = 1
     EAST = 2
@@ -29,8 +33,8 @@ def create_the_maze() -> None:
             if event.type == pygame.QUIT:
                 pygame.quit()
                 exit()
-        keys = pygame.key.get_pressed()   # ===> start here <===
-        if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_RIGHT] or keys[pygame.K_d] and not maze.has_wall(Position(pacman_x, pacman_y), (Direction.NORTH)):
             pacman_x += 0.6
         if keys[pygame.K_LEFT] or keys[pygame.K_a]:
             pacman_x -= 0.6
