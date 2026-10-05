@@ -39,6 +39,9 @@ def create_the_maze() -> None:
                 distance4 = math.dist((width * cell_size + 280, 100), event.pos)
                 if distance4 <= 25:
                     maze_color = (255, 255, 0)
+                distance4 = math.dist((width * cell_size + 350, 100), event.pos)
+                if distance4 <= 25:
+                    maze_color = (255, 255, 255)
 
         screen.fill((0, 0, 0))
         pygame.draw.rect(
@@ -50,6 +53,12 @@ def create_the_maze() -> None:
             for column in range(width):
                 x = column * cell_size
                 y = row * cell_size
+                if rows[row][column] == 15:
+                    pygame.draw.rect(
+                        screen,
+                        (maze_color),
+                        (x, y, cell_size, cell_size)
+                    )
                 if rows[row][column] & NORTH:
                     pygame.draw.line(
                         screen,
@@ -104,6 +113,12 @@ def create_the_maze() -> None:
             screen,
             (255, 255, 0),
             (width * cell_size + 280, 100),
+            25
+        )
+        pygame.draw.circle(
+            screen,
+            (255, 255, 255),
+            (width * cell_size + 350, 100),
             25
         )
         pygame.display.flip()
