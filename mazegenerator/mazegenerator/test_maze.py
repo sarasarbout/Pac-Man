@@ -18,14 +18,26 @@ def create_the_maze() -> None:
     menu_width = 400
     width = len(rows[0])
     height = len(rows)
+    pacman_x = 0
+    pacman_y = 0
     screen = pygame.display.set_mode((width * cell_size + menu_width, height * cell_size))
     maze_color = (255, 0, 0)
-
+    pacman = pygame.image.load('/home/sasarbou/Desktop/Pac-Man/pacman-art/pacman-down/3.png')
+    pacman = pygame.transform.scale(pacman, (40, 40))
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 exit()
+            keys = pygame.key.get_pressed()   # ===> start here <===
+            if keys[pygame.K_RIGHT]:
+                pacman_x += 10
+            if keys[pygame.K_LEFT]:
+                pacman_x -= 10
+            if keys[pygame.K_DOWN]:
+                pacman_y += 10
+            if keys[pygame.K_UP]:
+                pacman_x -= 10
             if event.type == pygame.MOUSEBUTTONDOWN:
                 distance1 = math.dist((width * cell_size + 75, 100), event.pos)
                 if distance1 <= 25:
@@ -121,6 +133,7 @@ def create_the_maze() -> None:
             (width * cell_size + 350, 100),
             25
         )
+        screen.blit(pacman, (pacman_x, pacman_y))
         pygame.display.flip()
 
     pygame.quit()
