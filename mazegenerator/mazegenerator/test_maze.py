@@ -73,12 +73,10 @@ def create_the_maze() -> None:
             pacman_x += 1
         elif pacman_x > target_x:
             pacman_x -= 1
-
         if pacman_y < target_y:
             pacman_y += 1
         elif pacman_y > target_y:
             pacman_y -= 1
-
         if pacman_x == target_x and pacman_y == target_y:
             pacman_position = target_position
             moving = False
