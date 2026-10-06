@@ -12,7 +12,7 @@ def create_the_maze() -> None:
     for row in generator.maze:
         print(row)
     pygame.init()
-    cell_size = 60
+    cell_size = 100
     maze = Maze(generator.maze)
     rows = generator.maze
     NORTH = 1
@@ -23,38 +23,65 @@ def create_the_maze() -> None:
     width = len(rows[0])
     height = len(rows)
     pacman_position = Position(0, 0)
-    pacman_x = pacman_position.x
-    pacman_y = pacman_position.y
+    pacman_size = 40
+    pacman_x = cell_size // 2 - pacman_size // 2
+    pacman_y = cell_size // 2 - pacman_size // 2
+    target_position = pacman_position
     screen = pygame.display.set_mode((width * cell_size + menu_width, height * cell_size))
     maze_color = (255, 0, 0)
     pacman = pygame.image.load('/home/sasarbou/Desktop/Pac-Man/pacman-art/pacman-down/3.png')
     pacman = pygame.transform.scale(pacman, (40, 40))
+    moving = False
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 exit()
         keys = pygame.key.get_pressed()
-        pacman_position = Position(
-            int(pacman_x // cell_size),
-            int(pacman_y // cell_size)
-        )
-        if (keys[pygame.K_RIGHT] or keys[pygame.K_d]) and maze.can_move(
-            pacman_position, Direction.EAST
-        ):
+        if not moving:
+            if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
+                if maze.can_move(pacman_position, Direction.EAST):
+                    target_position = Position(
+                        pacman_position.x + 1,
+                        pacman_position.y
+                    )
+                    moving = True
+        if not moving:
+            if keys[pygame.K_LEFT] or keys[pygame.K_l]:
+                if maze.can_move(pacman_position, Direction.WEST):
+                    target_position = Position(
+                        pacman_position.x - 1,
+                        pacman_position.y
+                    )
+        if not moving:
+            if keys[pygame.K_UP] or keys[pygame.K_w]:
+                if maze.can_move(pacman_position, Direction.NORTH):
+                    target_position = Position(
+                        pacman_position.x,
+                        pacman_position.y - 1
+                    )
+        if not moving:
+            if keys[pygame.K_DOWN] or keys[pygame.K_s]:
+                if maze.can_move(pacman_position,   Direction.SOUTH):
+                    target_position = Position(
+                        pacman_position.x,
+                        pacman_position.y + 1
+                    )
+        target_x = target_position.x * cell_size + cell_size // 2 - pacman_size // 2
+        target_y = target_position.y * cell_size + cell_size // 2 - pacman_size // 2
+        if pacman_x < target_x:
             pacman_x += 1
-        if (keys[pygame.K_LEFT] or keys[pygame.K_a]) and maze.can_move(
-            pacman_position, (Direction.WEST)
-        ):
+        elif pacman_x > target_x:
             pacman_x -= 1
-        if (keys[pygame.K_DOWN] or keys[pygame.K_s]) and maze.can_move(
-            pacman_position, (Direction.SOUTH)
-        ):
+
+        if pacman_y < target_y:
             pacman_y += 1
-        if (keys[pygame.K_UP] or keys[pygame.K_w]) and maze.can_move(
-            pacman_position, (Direction.NORTH)
-        ):
+        elif pacman_y > target_y:
             pacman_y -= 1
+
+        if pacman_x == target_x and pacman_y == target_y:
+            pacman_position = target_position
+            moving = False
         if event.type == pygame.MOUSEBUTTONDOWN:
             distance1 = math.dist((width * cell_size + 75, 100), event.pos)
             if distance1 <= 25:
