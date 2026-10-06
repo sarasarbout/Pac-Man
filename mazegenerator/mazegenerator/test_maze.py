@@ -148,6 +148,7 @@ def create_the_maze() -> None:
                         (x, y + cell_size),
                         8
                     )
+        # ===== draw color circles =====
         pygame.draw.circle(
             screen,
             (255, 0, 0),
