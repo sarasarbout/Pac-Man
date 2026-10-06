@@ -1,4 +1,3 @@
-```python
 from dataclasses import dataclass, field, fields
 from typing import Any
 import json
