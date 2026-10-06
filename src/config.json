@@ -16,22 +16,70 @@
       "name": "Level 1",
       "width": 21,
       "height": 21,
-      "pacgum": 42,
+      "pacgum": 441,
       "ghosts": 4
     },
     {
       "name": "Level 2",
       "width": 25,
       "height": 25,
-      "pacgum": 60,
+      "pacgum": 1300,
       "ghosts": 5
     },
     {
       "name": "Level 3",
       "width": 31,
       "height": 27,
-      "pacgum": 80,
+      "pacgum": 837,
       "ghosts": 6
+    },
+    {
+      "name": "Level 4",
+      "width": 33,
+      "height": 30,
+      "pacgum": 990
+    },
+    {
+      "name": "Level 5",
+      "width": 35,
+      "height": 31,
+      "pacgum": 1085,
+      "ghosts": 7
+    },
+    {
+      "name": "Level 6",
+      "width": 37,
+      "height": 33,
+      "pacgum": 1188,
+      "ghosts": 8
+    },
+    {
+      "name": "Level 7",
+      "width": 39,
+      "height": 35,
+      "pacgum": 1285,
+      "ghosts": 8
+    },
+    {
+      "name": "Level 8",
+      "width": 41,
+      "height": 37,
+      "pacgum": 1390,
+      "ghosts": 9
+    },
+    {
+      "name": "Level 9",
+      "width": 43,
+      "height": 39,
+      "pacgum": 1505,
+      "ghosts": 10
+    },
+    {
+      "name": "Level 10",
+      "width": 45,
+      "height": 41,
+      "pacgum": 1620,
+      "ghosts": 10
     }
   ]
 }

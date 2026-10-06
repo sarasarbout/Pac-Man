@@ -5,6 +5,7 @@ import math
 from model.maze import Maze
 from model.position import Position
 from model.direction import Direction
+from src.config_parser import GameConfig
 
 
 def create_the_maze() -> None:
@@ -12,7 +13,7 @@ def create_the_maze() -> None:
     for row in generator.maze:
         print(row)
     pygame.init()
-    cell_size = 100
+    cell_size = 80
     maze = Maze(generator.maze)
     rows = generator.maze
     NORTH = 1
