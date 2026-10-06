@@ -33,6 +33,7 @@ def create_the_maze() -> None:
     pacman = pygame.image.load('/home/sasarbou/Desktop/Pac-Man/pacman-art/pacman-down/3.png')
     pacman = pygame.transform.scale(pacman, (40, 40))
     moving = False
+    # ====== Controlling pacman movements ======
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -81,6 +82,7 @@ def create_the_maze() -> None:
         if pacman_x == target_x and pacman_y == target_y:
             pacman_position = target_position
             moving = False
+        # ===== adjusting maze colors =====
         if event.type == pygame.MOUSEBUTTONDOWN:
             distance1 = math.dist((width * cell_size + 75, 100), event.pos)
             if distance1 <= 25:
@@ -97,13 +99,13 @@ def create_the_maze() -> None:
             distance4 = math.dist((width * cell_size + 350, 100), event.pos)
             if distance4 <= 25:
                 maze_color = (255, 255, 255)
-
         screen.fill((0, 0, 0))
         pygame.draw.rect(
             screen,
             (30, 30, 30),
             (width * cell_size, 0, menu_width, height * cell_size)
         )
+        # ===== Drawing the cells ======
         for row in range(height):
             for column in range(width):
                 x = column * cell_size
