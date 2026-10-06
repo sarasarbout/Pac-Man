@@ -38,8 +38,8 @@ def create_the_maze(pacman: Pacman) -> None:
     pacgums = {
         Pacgum(Position(0, 0)),
         Pacgum(Position(width - 1, 0)),
-        Pacgum(Position(2, 0)),
-        Pacgum(Position(3, 0))
+        Pacgum(Position(0, height - 1)),
+        Pacgum(Position(width - 1, height - 1))
     }
     # ====== Controlling pacman movements ======
     while True:
