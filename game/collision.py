@@ -1,14 +1,13 @@
 """This file represent what happens when Pac-max is in
 the same position as something else(ghost)"""
-
-from model.pacman import Pacman
-from model.direction import Direction
-from model.position import Position
-from model.ghost import Ghost, Color, GhostMode, GhostName
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from model.pacman import Pacman
+from model.ghost import Ghost
 
 
 class Collision:
-    def check(self, pacman: Pacman, ghost: Ghost) -> bool:
+    def check(self, pacman: "Pacman", ghost: Ghost) -> bool:
         return pacman.position == ghost.position
 
 

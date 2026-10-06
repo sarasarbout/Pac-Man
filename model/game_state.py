@@ -1,5 +1,7 @@
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from model.pacman import Pacman
 from enum import Enum
-from model.pacman import Pacman
 from model.ghost import Ghost
 from game.collision import Collision
 from model.ghost import GhostMode
@@ -15,7 +17,7 @@ class GameStatus(Enum):
 
 class GameState:
     def __init__(
-            self, pacman: Pacman, ghosts: list[Ghost],
+            self, pacman: "Pacman", ghosts: list[Ghost],
             status: GameStatus = GameStatus.READY, ghost_eaten_count: int = 0
     ) -> None:
         self.pacman = pacman
