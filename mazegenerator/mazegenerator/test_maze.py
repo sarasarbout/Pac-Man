@@ -27,15 +27,19 @@ def create_the_maze(pacman: Pacman) -> None:
     height = len(rows)
     pacman.position = Position(width // 2, height // 2)
     pacman_size = 40
-    pacman_x = cell_size // 2 - pacman_size // 2
-    pacman_y = cell_size // 2 - pacman_size // 2
+    pacman_x = (pacman.position.x * cell_size
+                + cell_size // 2
+                - pacman_size // 2)
+    pacman_y = (pacman.position.x * cell_size
+                + cell_size // 2
+                - pacman_size // 2)
     target_position = pacman.position
     screen = pygame.display.set_mode((width * cell_size + menu_width, height * cell_size))
     maze_color = (255, 0, 0)
     pacman_image = pygame.image.load('/home/sasarbou/Desktop/Pac-Man/pacman-art/pacman-down/3.png')
     pacman_image = pygame.transform.scale(pacman_image, (40, 40))
     moving = False
-    pacgums = {
+    super_pacgums = {
         Pacgum(Position(0, 0)),
         Pacgum(Position(width - 1, 0)),
         Pacgum(Position(0, height - 1)),
@@ -63,6 +67,7 @@ def create_the_maze(pacman: Pacman) -> None:
                         pacman.position.x - 1,
                         pacman.position.y
                     )
+                    moving = True
         if not moving:
             if keys[pygame.K_UP] or keys[pygame.K_w]:
                 if maze.can_move(pacman.position, Direction.NORTH):
@@ -70,6 +75,7 @@ def create_the_maze(pacman: Pacman) -> None:
                         pacman.position.x,
                         pacman.position.y - 1
                     )
+                    moving = True
         if not moving:
             if keys[pygame.K_DOWN] or keys[pygame.K_s]:
                 if maze.can_move(pacman.position,   Direction.SOUTH):
@@ -77,6 +83,7 @@ def create_the_maze(pacman: Pacman) -> None:
                         pacman.position.x,
                         pacman.position.y + 1
                     )
+                    moving = True
         target_x = target_position.x * cell_size + cell_size // 2 - pacman_size // 2
         target_y = target_position.y * cell_size + cell_size // 2 - pacman_size // 2
         if pacman_x < target_x:
@@ -188,9 +195,9 @@ def create_the_maze(pacman: Pacman) -> None:
             25
         )
         screen.blit(pacman_image, (pacman_x, pacman_y))
-        # ==== draw the pacgums ====
+        # ==== draw the super_pacgums ====
         eaten_pacgums = None
-        for pacgum in pacgums:
+        for pacgum in super_pacgums:
             x = pacgum.position.x * cell_size + cell_size // 2
             y = pacgum.position.y * cell_size + cell_size // 2
             pygame.draw.circle(
@@ -199,12 +206,43 @@ def create_the_maze(pacman: Pacman) -> None:
                 (x, y),
                 10
             )
-        for pacgum in pacgums:
+        for pacgum in super_pacgums:
             if pacgum.position == pacman.position:
                 eaten_pacgums = pacgum
         if eaten_pacgums is not None:
-            pacgums.remove(eaten_pacgums)
-            pacman.score += 10
+            super_pacgums.remove(eaten_pacgums)
+            pacman.score += 50
+        # ===== draw the normal_pacgums =====
+        normal_pacgums = set()
+        eaten_small_pacgums = None
+        for row in range(height):
+            for column in range(width):
+                if rows[row][column] == 15:
+                    continue
+                position = Position(column, row)
+                if pacman.position == position:
+                    continue
+                has_super_pacgum = False
+                for big in super_pacgums:
+                    if big.position == position:
+                        has_super_pacgum = True
+                if has_super_pacgum:
+                    continue
+                x = position.x * cell_size + cell_size // 2
+                y = position.y * cell_size + cell_size // 2
+                pygame.draw.circle(
+                    screen,
+                    (255, 255, 255),
+                    (x, y),
+                    5
+                )
+                normal_pacgums.add(Pacgum(Position(x, y)))
+            for normal in normal_pacgums:
+                if normal.position == pacman.position:
+                    eaten_small_pacgums = normal
+                if eaten_small_pacgums is not None:
+                    normal.remove(eaten_small_pacgums)
+                    pacman.score += 10
         pygame.display.flip()
     pygame.quit()
 
