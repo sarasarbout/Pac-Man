@@ -8,6 +8,7 @@ from model.direction import Direction
 from model.pacman import Pacman
 from model.game_state import GameStatus
 from model.cell import Pacgum
+from pathlib import Path
 
 
 def create_the_maze(pacman: Pacman, speed: float) -> None:
@@ -36,8 +37,6 @@ def create_the_maze(pacman: Pacman, speed: float) -> None:
     target_position = pacman.position
     screen = pygame.display.set_mode((width * cell_size + menu_width, height * cell_size))
     maze_color = (255, 0, 0)
-    pacman_image = pygame.image.load('/home/sasarbou/Desktop/Pac-Man/pacman-art/pacman-down/3.png')
-    pacman_image = pygame.transform.scale(pacman_image, (40, 40))
     super_pacgums = {
         Pacgum(Position(0, 0)),
         Pacgum(Position(width - 1, 0)),
@@ -69,32 +68,43 @@ def create_the_maze(pacman: Pacman, speed: float) -> None:
         keys = pygame.key.get_pressed()
         if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
             if maze.can_move(pacman.position, Direction.EAST):
+                pacman.direction = Direction.EAST
+        elif keys[pygame.K_LEFT] or keys[pygame.K_l]:
+            if maze.can_move(pacman.position, Direction.WEST):
+                pacman.direction = Direction.WEST
+        elif keys[pygame.K_UP] or keys[pygame.K_w]:
+            if maze.can_move(pacman.position, Direction.NORTH):
+                pacman.direction = Direction.NORTH
+        elif keys[pygame.K_DOWN] or keys[pygame.K_s]:
+            if maze.can_move(pacman.position, Direction.SOUTH):
+                pacman.direction = Direction.SOUTH
+        if maze.can_move(pacman.position, pacman.direction):
+            if pacman.direction == Direction.EAST:
                 target_position = Position(
                     pacman.position.x + 1,
                     pacman.position.y
                 )
-        if keys[pygame.K_LEFT] or keys[pygame.K_l]:
-            if maze.can_move(pacman.position, Direction.WEST):
+
+            elif pacman.direction == Direction.WEST:
                 target_position = Position(
                     pacman.position.x - 1,
                     pacman.position.y
                 )
-        if keys[pygame.K_UP] or keys[pygame.K_w]:
-            if maze.can_move(pacman.position, Direction.NORTH):
+
+            elif pacman.direction == Direction.NORTH:
                 target_position = Position(
                     pacman.position.x,
                     pacman.position.y - 1
                 )
-        if keys[pygame.K_DOWN] or keys[pygame.K_s]:
-            if maze.can_move(pacman.position,   Direction.SOUTH):
+
+            elif pacman.direction == Direction.SOUTH:
                 target_position = Position(
                     pacman.position.x,
                     pacman.position.y + 1
                 )
         target_x = target_position.x * cell_size + cell_size // 2 - pacman_size // 2
         target_y = target_position.y * cell_size + cell_size // 2 - pacman_size // 2
-        if pacman_x == target_x and pacman_y == target_y:
-            pacman.position = target_position
+
         if pacman_x < target_x:
             pacman_x = min(pacman_x + speed, target_x)
         elif pacman_x > target_x:
@@ -104,6 +114,21 @@ def create_the_maze(pacman: Pacman, speed: float) -> None:
             pacman_y = min(pacman_y + speed, target_y)
         elif pacman_y > target_y:
             pacman_y = max(pacman_y - speed, target_y)
+        if pacman_x == target_x and pacman_y == target_y:
+            pacman.position = target_position
+
+        # ===== Changing Pacman picture depending on his Direction ====
+        if pacman.direction == Direction.NORTH:
+            path = Path('/home/sasarbou/Desktop/Pac-Man/pacman-art/pacman-up/1.png')
+        elif pacman.direction == Direction.EAST:
+            path = Path('/home/sasarbou/Desktop/Pac-Man/pacman-art/pacman-right/1.png')
+        elif pacman.direction == Direction.SOUTH:
+            path = Path('/home/sasarbou/Desktop/Pac-Man/pacman-art/pacman-down/1.png')
+        elif pacman.direction == Direction.WEST:
+            path = Path('/home/sasarbou/Desktop/Pac-Man/pacman-art/pacman-left/1.png')
+        pacman_image = pygame.image.load(path)
+        pacman_image = pygame.transform.scale(pacman_image, (40, 40))
+
         # ===== adjusting maze colors =====
         if event.type == pygame.MOUSEBUTTONDOWN:
             distance1 = math.dist((width * cell_size + 75, 100), event.pos)
@@ -239,4 +264,4 @@ def create_the_maze(pacman: Pacman, speed: float) -> None:
 
 status = GameStatus.READY
 mk = Pacman(Direction.EAST, Position(4, 1), status.READY)
-create_the_maze(mk, 0.3)
+create_the_maze(mk, 0.2)
