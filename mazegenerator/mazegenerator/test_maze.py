@@ -10,7 +10,7 @@ from model.game_state import GameStatus
 from model.cell import Pacgum
 
 
-def create_the_maze(pacman: Pacman) -> None:
+def create_the_maze(pacman: Pacman, speed: float) -> None:
     generator = MazeGenerator()
     for row in generator.maze:
         print(row)
@@ -36,9 +36,8 @@ def create_the_maze(pacman: Pacman) -> None:
     target_position = pacman.position
     screen = pygame.display.set_mode((width * cell_size + menu_width, height * cell_size))
     maze_color = (255, 0, 0)
-    pacman_image = pygame.image.load('/Users/sarasarbout/Desktop/Pac-Man/pacman-art/pacman-down/3.png')
+    pacman_image = pygame.image.load('/home/sasarbou/Desktop/Pac-Man/pacman-art/pacman-down/3.png')
     pacman_image = pygame.transform.scale(pacman_image, (40, 40))
-    moving = False
     super_pacgums = {
         Pacgum(Position(0, 0)),
         Pacgum(Position(width - 1, 0)),
@@ -48,71 +47,63 @@ def create_the_maze(pacman: Pacman) -> None:
     # ====== Controlling pacman movements ======
     normal_pacgums = set()
     for row in range(height):
-            for column in range(width):
-                if rows[row][column] == 15:
-                    continue
-                position = Position(column, row)
-                if pacman.position == position:
-                    continue
-                has_super_pacgum = False
-                for big in super_pacgums:
-                    if big.position == position:
-                        has_super_pacgum = True
-                        break
-                if has_super_pacgum:
-                    continue
-                normal_pacgums.add(Pacgum(position))
+        for column in range(width):
+            if rows[row][column] == 15:
+                continue
+            position = Position(column, row)
+            if pacman.position == position:
+                continue
+            has_super_pacgum = False
+            for big in super_pacgums:
+                if big.position == position:
+                    has_super_pacgum = True
+                    break
+            if has_super_pacgum:
+                continue
+            normal_pacgums.add(Pacgum(position))
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 exit()
         keys = pygame.key.get_pressed()
-        if not moving:
-            if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
-                if maze.can_move(pacman.position, Direction.EAST):
-                    target_position = Position(
-                        pacman.position.x + 1,
-                        pacman.position.y
-                    )
-                    moving = True
-        if not moving:
-            if keys[pygame.K_LEFT] or keys[pygame.K_l]:
-                if maze.can_move(pacman.position, Direction.WEST):
-                    target_position = Position(
-                        pacman.position.x - 1,
-                        pacman.position.y
-                    )
-                    moving = True
-        if not moving:
-            if keys[pygame.K_UP] or keys[pygame.K_w]:
-                if maze.can_move(pacman.position, Direction.NORTH):
-                    target_position = Position(
-                        pacman.position.x,
-                        pacman.position.y - 1
-                    )
-                    moving = True
-        if not moving:
-            if keys[pygame.K_DOWN] or keys[pygame.K_s]:
-                if maze.can_move(pacman.position,   Direction.SOUTH):
-                    target_position = Position(
-                        pacman.position.x,
-                        pacman.position.y + 1
-                    )
-                    moving = True
+        if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
+            if maze.can_move(pacman.position, Direction.EAST):
+                target_position = Position(
+                    pacman.position.x + 1,
+                    pacman.position.y
+                )
+        if keys[pygame.K_LEFT] or keys[pygame.K_l]:
+            if maze.can_move(pacman.position, Direction.WEST):
+                target_position = Position(
+                    pacman.position.x - 1,
+                    pacman.position.y
+                )
+        if keys[pygame.K_UP] or keys[pygame.K_w]:
+            if maze.can_move(pacman.position, Direction.NORTH):
+                target_position = Position(
+                    pacman.position.x,
+                    pacman.position.y - 1
+                )
+        if keys[pygame.K_DOWN] or keys[pygame.K_s]:
+            if maze.can_move(pacman.position,   Direction.SOUTH):
+                target_position = Position(
+                    pacman.position.x,
+                    pacman.position.y + 1
+                )
         target_x = target_position.x * cell_size + cell_size // 2 - pacman_size // 2
         target_y = target_position.y * cell_size + cell_size // 2 - pacman_size // 2
-        if pacman_x < target_x:
-            pacman_x += 1
-        elif pacman_x > target_x:
-            pacman_x -= 1
-        if pacman_y < target_y:
-            pacman_y += 1
-        elif pacman_y > target_y:
-            pacman_y -= 1
         if pacman_x == target_x and pacman_y == target_y:
             pacman.position = target_position
-            moving = False
+        if pacman_x < target_x:
+            pacman_x = min(pacman_x + speed, target_x)
+        elif pacman_x > target_x:
+            pacman_x = max(pacman_x - speed, target_x)
+
+        if pacman_y < target_y:
+            pacman_y = min(pacman_y + speed, target_y)
+        elif pacman_y > target_y:
+            pacman_y = max(pacman_y - speed, target_y)
         # ===== adjusting maze colors =====
         if event.type == pygame.MOUSEBUTTONDOWN:
             distance1 = math.dist((width * cell_size + 75, 100), event.pos)
@@ -248,4 +239,4 @@ def create_the_maze(pacman: Pacman) -> None:
 
 status = GameStatus.READY
 mk = Pacman(Direction.EAST, Position(4, 1), status.READY)
-create_the_maze(mk)
+create_the_maze(mk, 0.3)
