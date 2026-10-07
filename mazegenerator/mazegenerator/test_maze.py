@@ -66,6 +66,7 @@ def create_the_maze(pacman: Pacman, speed: float) -> None:
                 pygame.quit()
                 exit()
         keys = pygame.key.get_pressed()
+        # ===== Allow Pacman to move to his next direction only if he's in the center of the current cell =====
         at_cell_center = (
             pacman_x == pacman.position.x * cell_size + cell_size // 2 - pacman_size // 2
             and
