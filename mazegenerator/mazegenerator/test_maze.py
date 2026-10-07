@@ -16,8 +16,8 @@ def create_the_maze(pacman: Pacman, speed: float) -> None:
     for row in generator.maze:
         print(row)
     pygame.init()
-    start_sound = pygame.mixer.Sound('/home/sasarbou/Desktop/hey/pacman-art/sounds/starting.wav')
-    eating_sound = pygame.mixer.Sound('/home/sasarbou/Desktop/hey/pacman-art/sounds/eat_dot.wav')
+    start_sound = pygame.mixer.Sound('/home/sasarbou/Desktop/pacman/pacman-art/sounds/starting.wav')
+    eating_sound = pygame.mixer.Sound('/home/sasarbou/Desktop/pacman/pacman-art/sounds/eat_dot.wav')
     game_started = False
     cell_size = 50
     maze = Maze(generator.maze)
@@ -139,15 +139,15 @@ def create_the_maze(pacman: Pacman, speed: float) -> None:
 
         # ===== Changing Pacman picture depending on his Direction ====
         if moving is False:
-            path = Path('/home/sasarbou/Desktop/Pac-Man/pacman-art/pacman-up/3.png')   # trying to fix this move
+            path = Path('/home/sasarbou/Desktop/pacman/pacman-art/pacman-up/3.png')   # trying to fix this move
         elif pacman.direction == Direction.NORTH:
-            path = Path('/home/sasarbou/Desktop/Pac-Man/pacman-art/pacman-up/1.png')
+            path = Path('/home/sasarbou/Desktop/pacman/pacman-art/pacman-up/1.png')
         elif pacman.direction == Direction.EAST:
-            path = Path('/home/sasarbou/Desktop/Pac-Man/pacman-art/pacman-right/1.png')
+            path = Path('/home/sasarbou/Desktop/pacman/pacman-art/pacman-right/1.png')
         elif pacman.direction == Direction.SOUTH:
-            path = Path('/home/sasarbou/Desktop/Pac-Man/pacman-art/pacman-down/1.png')
+            path = Path('/home/sasarbou/Desktop/pacman/pacman-art/pacman-down/1.png')
         elif pacman.direction == Direction.WEST:
-            path = Path('/home/sasarbou/Desktop/Pac-Man/pacman-art/pacman-left/1.png')
+            path = Path('/home/sasarbou/Desktop/pacman/pacman-art/pacman-left/1.png')
         pacman_image = pygame.image.load(path)
         pacman_image = pygame.transform.scale(pacman_image, (40, 40))
 
