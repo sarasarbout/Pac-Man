@@ -85,7 +85,9 @@ def create_the_maze(pacman: Pacman, speed: float) -> None:
             elif keys[pygame.K_DOWN] or keys[pygame.K_s]:
                 if maze.can_move(pacman.position, Direction.SOUTH):
                     pacman.direction = Direction.SOUTH
+        moving = False
         if maze.can_move(pacman.position, pacman.direction):
+            moving = True
             if pacman.direction == Direction.EAST:
                 target_position = Position(
                     pacman.position.x + 1,
@@ -125,7 +127,9 @@ def create_the_maze(pacman: Pacman, speed: float) -> None:
             pacman.position = target_position
 
         # ===== Changing Pacman picture depending on his Direction ====
-        if pacman.direction == Direction.NORTH:
+        if moving is False:
+            path = Path('/home/sasarbou/Desktop/Pac-Man/pacman-art/pacman-up/3.png')   # trying to fix this move
+        elif pacman.direction == Direction.NORTH:
             path = Path('/home/sasarbou/Desktop/Pac-Man/pacman-art/pacman-up/1.png')
         elif pacman.direction == Direction.EAST:
             path = Path('/home/sasarbou/Desktop/Pac-Man/pacman-art/pacman-right/1.png')
