@@ -66,18 +66,24 @@ def create_the_maze(pacman: Pacman, speed: float) -> None:
                 pygame.quit()
                 exit()
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
-            if maze.can_move(pacman.position, Direction.EAST):
-                pacman.direction = Direction.EAST
-        elif keys[pygame.K_LEFT] or keys[pygame.K_l]:
-            if maze.can_move(pacman.position, Direction.WEST):
-                pacman.direction = Direction.WEST
-        elif keys[pygame.K_UP] or keys[pygame.K_w]:
-            if maze.can_move(pacman.position, Direction.NORTH):
-                pacman.direction = Direction.NORTH
-        elif keys[pygame.K_DOWN] or keys[pygame.K_s]:
-            if maze.can_move(pacman.position, Direction.SOUTH):
-                pacman.direction = Direction.SOUTH
+        at_cell_center = (
+            pacman_x == pacman.position.x * cell_size + cell_size // 2 - pacman_size // 2
+            and
+            pacman_y == pacman.position.y * cell_size + cell_size // 2 - pacman_size // 2
+        )
+        if at_cell_center:
+            if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
+                if maze.can_move(pacman.position, Direction.EAST):
+                    pacman.direction = Direction.EAST
+            elif keys[pygame.K_LEFT] or keys[pygame.K_l]:
+                if maze.can_move(pacman.position, Direction.WEST):
+                    pacman.direction = Direction.WEST
+            elif keys[pygame.K_UP] or keys[pygame.K_w]:
+                if maze.can_move(pacman.position, Direction.NORTH):
+                    pacman.direction = Direction.NORTH
+            elif keys[pygame.K_DOWN] or keys[pygame.K_s]:
+                if maze.can_move(pacman.position, Direction.SOUTH):
+                    pacman.direction = Direction.SOUTH
         if maze.can_move(pacman.position, pacman.direction):
             if pacman.direction == Direction.EAST:
                 target_position = Position(
@@ -264,4 +270,4 @@ def create_the_maze(pacman: Pacman, speed: float) -> None:
 
 status = GameStatus.READY
 mk = Pacman(Direction.EAST, Position(4, 1), status.READY)
-create_the_maze(mk, 0.2)
+create_the_maze(mk, 0.3)
