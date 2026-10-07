@@ -28,7 +28,7 @@ class GhostName(Enum):
 
 
 class Ghost:
-    def __init__(self, name: GhostName, position: Position, direction: Direction, color: Color, mode: GhostMode):
+    def __init__(self, name: str, position: Position, direction: Direction, color: Color, mode: GhostMode):
         self.position = position
         self.direction = direction
         self.color = color
