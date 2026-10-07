@@ -16,7 +16,7 @@ def create_the_maze(pacman: Pacman, speed: float) -> None:
     for row in generator.maze:
         print(row)
     pygame.init()
-    start_sound = pygame.mixer.Sound('/home/sasarbou/Desktop/hey/pacman-art/sounds/start.wav')
+    start_sound = pygame.mixer.Sound('/home/sasarbou/Desktop/hey/pacman-art/sounds/starting.wav')
     eating_sound = pygame.mixer.Sound('/home/sasarbou/Desktop/hey/pacman-art/sounds/eat_dot.wav')
     game_started = False
     cell_size = 50
