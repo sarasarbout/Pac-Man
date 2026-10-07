@@ -16,6 +16,8 @@ def create_the_maze(pacman: Pacman, speed: float) -> None:
     for row in generator.maze:
         print(row)
     pygame.init()
+    start_sound = pygame.mixer.Sound('/home/sasarbou/Desktop/Pac-Man/pacman-art/sounds/start.wav')
+    game_started = False
     cell_size = 50
     maze = Maze(generator.maze)
     rows = generator.maze
@@ -74,17 +76,25 @@ def create_the_maze(pacman: Pacman, speed: float) -> None:
         )
         if at_cell_center:
             if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
+                game_started = True
                 if maze.can_move(pacman.position, Direction.EAST):
                     pacman.direction = Direction.EAST
             elif keys[pygame.K_LEFT] or keys[pygame.K_l]:
+                game_started = True
                 if maze.can_move(pacman.position, Direction.WEST):
                     pacman.direction = Direction.WEST
             elif keys[pygame.K_UP] or keys[pygame.K_w]:
+                game_started = True
                 if maze.can_move(pacman.position, Direction.NORTH):
                     pacman.direction = Direction.NORTH
             elif keys[pygame.K_DOWN] or keys[pygame.K_s]:
+                game_started = True
                 if maze.can_move(pacman.position, Direction.SOUTH):
                     pacman.direction = Direction.SOUTH
+        if not game_started:
+            start_sound.play(loops=-1)
+        if game_started:
+            start_sound.stop()
         moving = False
         if maze.can_move(pacman.position, pacman.direction):
             moving = True
