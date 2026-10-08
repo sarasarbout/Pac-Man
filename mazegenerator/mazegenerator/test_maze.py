@@ -12,6 +12,7 @@ from create_super_pacgums import create_super_pacgums
 from create_normal_pacgums import create_normal_pacgums
 from create_the_maze import create_maze
 from pacman_directions_path import pacman_picture
+from src.config_parser import ConfigParser
 
 
 def create_the_maze(pacman: Pacman, speed: float) -> None:
@@ -37,6 +38,9 @@ def create_the_maze(pacman: Pacman, speed: float) -> None:
                 - pacman_size // 2)
     target_position = pacman.position
     screen = pygame.display.set_mode((width * cell_size, height * cell_size))
+    parser = ConfigParser("/home/sasarbou/Desktop/pacman/src/config.json")
+    config = parser.config_data
+    # print(config.score)
     # ====== Controlling pacman movements ======
     normal_pacgums = create_normal_pacgums(pacman, rows)
     super_pacgums = {
@@ -111,7 +115,6 @@ def create_the_maze(pacman: Pacman, speed: float) -> None:
             pacman_x = min(pacman_x + speed, target_x)
         elif pacman_x > target_x:
             pacman_x = max(pacman_x - speed, target_x)
-
         if pacman_y < target_y:
             pacman_y = min(pacman_y + speed, target_y)
         elif pacman_y > target_y:
@@ -131,7 +134,7 @@ def create_the_maze(pacman: Pacman, speed: float) -> None:
         create_maze(rows, cell_size, screen)
         screen.blit(pacman_image, (pacman_x, pacman_y))
         # ==== draw the super_pacgums ====
-        create_super_pacgums(width, height, cell_size, screen, pacman, super_pacgums)
+        create_super_pacgums(width, height, cell_size, screen, pacman, super_pacgums, config)
         # ===== draw the normal_pacgums =====
         eaten_small_pacgums = None
         for normal in normal_pacgums:
@@ -141,12 +144,12 @@ def create_the_maze(pacman: Pacman, speed: float) -> None:
         if eaten_small_pacgums is not None:
             eating_sound.play()
             normal_pacgums.remove(eaten_small_pacgums)
-            pacman.score += 10
+            pacman.score += (config.points_per_pacgum)
         for normal in normal_pacgums:
             x = normal.position.x * cell_size + cell_size // 2
             y = normal.position.y * cell_size + cell_size // 2
             pygame.draw.circle(screen, (255, 255, 255), (x, y), 5)
-        pygame.display.flip()
+        pygame.display.update()
     pygame.quit()
 
 
