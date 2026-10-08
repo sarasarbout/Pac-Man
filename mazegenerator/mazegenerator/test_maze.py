@@ -26,7 +26,6 @@ def create_the_maze(pacman: Pacman, speed: float) -> None:
     EAST = 2
     SOUTH = 4
     WEST = 8
-    menu_width = 400
     width = len(rows[0])
     height = len(rows)
     pacman.position = Position(width // 2, height // 2)
@@ -38,8 +37,8 @@ def create_the_maze(pacman: Pacman, speed: float) -> None:
                 + cell_size // 2
                 - pacman_size // 2)
     target_position = pacman.position
-    screen = pygame.display.set_mode((width * cell_size + menu_width, height * cell_size))
-    maze_color = (255, 0, 0)
+    screen = pygame.display.set_mode((width * cell_size , height * cell_size))
+    maze_color = (0, 0, 255)
     super_pacgums = {
         Pacgum(Position(0, 0)),
         Pacgum(Position(width - 1, 0)),
@@ -152,28 +151,7 @@ def create_the_maze(pacman: Pacman, speed: float) -> None:
         pacman_image = pygame.transform.scale(pacman_image, (40, 40))
 
         # ===== adjusting maze colors =====
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            distance1 = math.dist((width * cell_size + 75, 100), event.pos)
-            if distance1 <= 25:
-                maze_color = (255, 0, 0)
-            distance2 = math.dist((width * cell_size + 140, 100), event.pos)
-            if distance2 <= 25:
-                maze_color = (0, 255, 0)
-            distance3 = math.dist((width * cell_size + 210, 100), event.pos)
-            if distance3 <= 25:
-                maze_color = (0, 0, 255)
-            distance4 = math.dist((width * cell_size + 280, 100), event.pos)
-            if distance4 <= 25:
-                maze_color = (255, 255, 0)
-            distance4 = math.dist((width * cell_size + 350, 100), event.pos)
-            if distance4 <= 25:
-                maze_color = (255, 255, 255)
         screen.fill((0, 0, 0))
-        pygame.draw.rect(
-            screen,
-            (30, 30, 30),
-            (width * cell_size, 0, menu_width, height * cell_size)
-        )
         # ===== Drawing the cells ======
         for row in range(height):
             for column in range(width):
@@ -217,37 +195,6 @@ def create_the_maze(pacman: Pacman, speed: float) -> None:
                         (x, y + cell_size),
                         8
                     )
-        # ===== draw color circle =====
-        pygame.draw.circle(
-            screen,
-            (255, 0, 0),
-            (width * cell_size + 75, 100),
-            25
-        )
-        pygame.draw.circle(
-            screen,
-            (0, 255, 0),
-            (width * cell_size + 140, 100),
-            25
-        )
-        pygame.draw.circle(
-            screen,
-            (0, 0, 255),
-            (width * cell_size + 210, 100),
-            25
-        )
-        pygame.draw.circle(
-            screen,
-            (255, 255, 0),
-            (width * cell_size + 280, 100),
-            25
-        )
-        pygame.draw.circle(
-            screen,
-            (255, 255, 255),
-            (width * cell_size + 350, 100),
-            25
-        )
         screen.blit(pacman_image, (pacman_x, pacman_y))
         # ==== draw the super_pacgums ====
         eaten_pacgums = None
