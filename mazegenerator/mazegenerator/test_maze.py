@@ -139,7 +139,7 @@ def create_the_maze(pacman: Pacman, speed: float) -> None:
 
         # ===== Changing Pacman picture depending on his Direction ====
         if moving is False:
-            path = Path('/home/sasarbou/Desktop/pacman/pacman-art/pacman-up/3.png')   # trying to fix this move
+            path = Path('/home/sasarbou/Desktop/pacman/pacman-art/pacman-up/3.png')  # trying to fix this move
         elif pacman.direction == Direction.NORTH:
             path = Path('/home/sasarbou/Desktop/pacman/pacman-art/pacman-up/1.png')
         elif pacman.direction == Direction.EAST:
@@ -264,6 +264,7 @@ def create_the_maze(pacman: Pacman, speed: float) -> None:
             if pacgum.position == pacman.position:
                 eaten_pacgums = pacgum
         if eaten_pacgums is not None:
+            eating_sound.play()
             super_pacgums.remove(eaten_pacgums)
             pacman.score += 50
         # ===== draw the normal_pacgums =====
