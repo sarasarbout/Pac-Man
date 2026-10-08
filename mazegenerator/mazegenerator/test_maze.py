@@ -1,7 +1,6 @@
 from mazegenerator import MazeGenerator
 import pygame
 from sys import exit
-import math
 from model.maze import Maze
 from model.position import Position
 from model.direction import Direction
@@ -9,12 +8,16 @@ from model.pacman import Pacman
 from model.game_state import GameStatus
 from model.cell import Pacgum
 from pathlib import Path
+from create_super_pacgums import create_super_pacgums
+from create_normal_pacgums import create_normal_pacgums
+from create_the_maze import create_maze
+from pacman_directions_path import pacman_picture
 
 
 def create_the_maze(pacman: Pacman, speed: float) -> None:
     generator = MazeGenerator()
-    for row in generator.maze:
-        print(row)
+    rows = generator.maze
+    maze = Maze(rows)
     pygame.init()
     start_sound = pygame.mixer.Sound('/home/sasarbou/Desktop/pacman/pacman-art/sounds/starting.wav')
     eating_sound = pygame.mixer.Sound('/home/sasarbou/Desktop/pacman/pacman-art/sounds/eat_dot.wav')
@@ -22,10 +25,6 @@ def create_the_maze(pacman: Pacman, speed: float) -> None:
     cell_size = 50
     maze = Maze(generator.maze)
     rows = generator.maze
-    NORTH = 1
-    EAST = 2
-    SOUTH = 4
-    WEST = 8
     width = len(rows[0])
     height = len(rows)
     pacman.position = Position(width // 2, height // 2)
@@ -37,31 +36,15 @@ def create_the_maze(pacman: Pacman, speed: float) -> None:
                 + cell_size // 2
                 - pacman_size // 2)
     target_position = pacman.position
-    screen = pygame.display.set_mode((width * cell_size , height * cell_size))
-    maze_color = (0, 0, 255)
+    screen = pygame.display.set_mode((width * cell_size, height * cell_size))
+    # ====== Controlling pacman movements ======
+    normal_pacgums = create_normal_pacgums(pacman, rows)
     super_pacgums = {
         Pacgum(Position(0, 0)),
         Pacgum(Position(width - 1, 0)),
         Pacgum(Position(0, height - 1)),
         Pacgum(Position(width - 1, height - 1))
     }
-    # ====== Controlling pacman movements ======
-    normal_pacgums = set()
-    for row in range(height):
-        for column in range(width):
-            if rows[row][column] == 15:
-                continue
-            position = Position(column, row)
-            if pacman.position == position:
-                continue
-            has_super_pacgum = False
-            for big in super_pacgums:
-                if big.position == position:
-                    has_super_pacgum = True
-                    break
-            if has_super_pacgum:
-                continue
-            normal_pacgums.add(Pacgum(position))
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -139,81 +122,16 @@ def create_the_maze(pacman: Pacman, speed: float) -> None:
         # ===== Changing Pacman picture depending on his Direction ====
         if moving is False:
             path = Path('/home/sasarbou/Desktop/pacman/pacman-art/pacman-up/3.png')  # trying to fix this move
-        elif pacman.direction == Direction.NORTH:
-            path = Path('/home/sasarbou/Desktop/pacman/pacman-art/pacman-up/1.png')
-        elif pacman.direction == Direction.EAST:
-            path = Path('/home/sasarbou/Desktop/pacman/pacman-art/pacman-right/1.png')
-        elif pacman.direction == Direction.SOUTH:
-            path = Path('/home/sasarbou/Desktop/pacman/pacman-art/pacman-down/1.png')
-        elif pacman.direction == Direction.WEST:
-            path = Path('/home/sasarbou/Desktop/pacman/pacman-art/pacman-left/1.png')
+        else:
+            path = pacman_picture(pacman)
         pacman_image = pygame.image.load(path)
         pacman_image = pygame.transform.scale(pacman_image, (40, 40))
 
-        # ===== adjusting maze colors =====
         screen.fill((0, 0, 0))
-        # ===== Drawing the cells ======
-        for row in range(height):
-            for column in range(width):
-                x = column * cell_size
-                y = row * cell_size
-                if rows[row][column] == 15:
-                    pygame.draw.rect(
-                        screen,
-                        (255, 255, 255),
-                        (x, y, cell_size, cell_size)
-                    )
-                if rows[row][column] & NORTH:
-                    pygame.draw.line(
-                        screen,
-                        (maze_color),
-                        (x, y),
-                        (x + cell_size, y),
-                        8
-                    )
-                if rows[row][column] & EAST:
-                    pygame.draw.line(
-                        screen,
-                        (maze_color),
-                        (x + cell_size, y),
-                        (x + cell_size, y + cell_size),
-                        8
-                    )
-                if rows[row][column] & SOUTH:
-                    pygame.draw.line(
-                        screen,
-                        (maze_color),
-                        (x, y + cell_size),
-                        (x + cell_size, y + cell_size),
-                        8
-                    )
-                if rows[row][column] & WEST:
-                    pygame.draw.line(
-                        screen,
-                        (maze_color),
-                        (x, y),
-                        (x, y + cell_size),
-                        8
-                    )
+        create_maze(rows, cell_size, screen)
         screen.blit(pacman_image, (pacman_x, pacman_y))
         # ==== draw the super_pacgums ====
-        eaten_pacgums = None
-        for pacgum in super_pacgums:
-            x = pacgum.position.x * cell_size + cell_size // 2
-            y = pacgum.position.y * cell_size + cell_size // 2
-            pygame.draw.circle(
-                screen,
-                (255, 255, 255),
-                (x, y),
-                10
-            )
-        for pacgum in super_pacgums:
-            if pacgum.position == pacman.position:
-                eaten_pacgums = pacgum
-        if eaten_pacgums is not None:
-            eating_sound.play()
-            super_pacgums.remove(eaten_pacgums)
-            pacman.score += 50
+        create_super_pacgums(width, height, cell_size, screen, pacman, super_pacgums)
         # ===== draw the normal_pacgums =====
         eaten_small_pacgums = None
         for normal in normal_pacgums:
@@ -227,7 +145,6 @@ def create_the_maze(pacman: Pacman, speed: float) -> None:
         for normal in normal_pacgums:
             x = normal.position.x * cell_size + cell_size // 2
             y = normal.position.y * cell_size + cell_size // 2
-
             pygame.draw.circle(screen, (255, 255, 255), (x, y), 5)
         pygame.display.flip()
     pygame.quit()
@@ -235,4 +152,4 @@ def create_the_maze(pacman: Pacman, speed: float) -> None:
 
 status = GameStatus.READY
 mk = Pacman(Direction.EAST, Position(4, 1), status.READY)
-create_the_maze(mk, 0.3)
+create_the_maze(mk, 0.5)
