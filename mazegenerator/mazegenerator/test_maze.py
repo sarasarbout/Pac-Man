@@ -19,17 +19,10 @@ def create_the_maze(pacman: Pacman, speed: float) -> None:
     parser = ConfigParser("/home/sasarbou/Desktop/pacman/src/config.json")
     config = parser.config_data
     level1 = config.levels[0]
-    level2 = config.levels[1]
-    level3 = config.levels[2]
-    level4 = config.levels[3]
-    level5 = config.levels[4]
-    level6 = config.levels[5]
-    level7 = config.levels[6]
     w = level1["width"]
     h = level1["height"]
     generator = MazeGenerator(size=(w, h), perfect=False, seed=42)
     rows = generator.maze
-    print(level2["seed"])
     maze = Maze(rows)
     pygame.init()
     start_sound = pygame.mixer.Sound('/home/sasarbou/Desktop/pacman/pacman-art/sounds/starting.wav')
