@@ -1,6 +1,5 @@
 # Pac-Man configuration file
 # Lines starting with '#' are comments and are ignored by the parser.
-
 {
   "highscore_filename": "highscores.json",
   "lives": 3,
@@ -15,8 +14,6 @@
       "name": "Level 1",
       "width": 21,
       "height": 21,
-      "pacgum": 441,
-      "ghosts": 4,
       "seed": 42
     },
     {

@@ -16,8 +16,20 @@ from src.config_parser import ConfigParser
 
 
 def create_the_maze(pacman: Pacman, speed: float) -> None:
-    generator = MazeGenerator()
+    parser = ConfigParser("/home/sasarbou/Desktop/pacman/src/config.json")
+    config = parser.config_data
+    level1 = config.levels[0]
+    level2 = config.levels[1]
+    level3 = config.levels[2]
+    level4 = config.levels[3]
+    level5 = config.levels[4]
+    level6 = config.levels[5]
+    level7 = config.levels[6]
+    w = level1["width"]
+    h = level1["height"]
+    generator = MazeGenerator(size=(w, h), perfect=False, seed=42)
     rows = generator.maze
+    print(level2["seed"])
     maze = Maze(rows)
     pygame.init()
     start_sound = pygame.mixer.Sound('/home/sasarbou/Desktop/pacman/pacman-art/sounds/starting.wav')
@@ -38,8 +50,6 @@ def create_the_maze(pacman: Pacman, speed: float) -> None:
                 - pacman_size // 2)
     target_position = pacman.position
     screen = pygame.display.set_mode((width * cell_size, height * cell_size))
-    parser = ConfigParser("/home/sasarbou/Desktop/pacman/src/config.json")
-    config = parser.config_data
     # print(config.score)
     # ====== Controlling pacman movements ======
     normal_pacgums = create_normal_pacgums(pacman, rows)
@@ -155,4 +165,4 @@ def create_the_maze(pacman: Pacman, speed: float) -> None:
 
 status = GameStatus.READY
 mk = Pacman(Direction.EAST, Position(4, 1), status.READY)
-create_the_maze(mk, 0.5)
+create_the_maze(mk, 1)

@@ -2,7 +2,7 @@ from dataclasses import dataclass, field, fields
 from typing import Any
 import json
 import os
-
+import random
 
 class ConfigError(Exception):
     """Custom exception for configuration errors."""
@@ -22,16 +22,16 @@ class GameConfig:
     points_per_ghost: int = 200
 
     levels: list[dict[str, Any]] = field(default_factory=lambda: [
-        {"width": 21, "height": 17, "pacgum": 42, "seed": 42},
-        {"width": 23, "height": 17, "pacgum": 48, "seed": None},
-        {"width": 25, "height": 19, "pacgum": 54, "seed": None},
-        {"width": 25, "height": 19, "pacgum": 55, "seed": None},
-        {"width": 27, "height": 21, "pacgum": 60, "seed": None},
-        {"width": 29, "height": 21, "pacgum": 66, "seed": None},
-        {"width": 31, "height": 23, "pacgum": 72, "seed": None},
-        {"width": 31, "height": 23, "pacgum": 73, "seed": None},
-        {"width": 33, "height": 25, "pacgum": 78, "seed": None},
-        {"width": 35, "height": 25, "pacgum": 84, "seed": None},
+        {"width": 21, "height": 17, "pacgum": 42, "seed": random.randint(1, 50)},
+        {"width": 23, "height": 17, "pacgum": 48, "seed": random.randint(1, 50)},
+        {"width": 25, "height": 19, "pacgum": 54, "seed": random.randint(1, 50)},
+        {"width": 25, "height": 19, "pacgum": 55, "seed": random.randint(1, 50)},
+        {"width": 27, "height": 21, "pacgum": 60, "seed": random.randint(1, 50)},
+        {"width": 29, "height": 21, "pacgum": 66, "seed": random.randint(1, 50)},
+        {"width": 31, "height": 23, "pacgum": 72, "seed": random.randint(1, 50)},
+        {"width": 31, "height": 23, "pacgum": 73, "seed": random.randint(1, 50)},
+        {"width": 33, "height": 25, "pacgum": 78, "seed": random.randint(1, 50)},
+        {"width": 35, "height": 25, "pacgum": 84, "seed": random.randint(1, 50)},
     ])
 
 
