@@ -67,6 +67,11 @@ def create_the_maze(pacman: Pacman) -> None:
         Pacgum(Position(0, height - 1)),
         Pacgum(Position(width - 1, height - 1))
     }
+    game_started = False
+    if not game_started:
+        start_sound.play()
+    else:
+        start_sound.stop()
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -96,10 +101,10 @@ def create_the_maze(pacman: Pacman) -> None:
                 game_started = True
                 if maze.can_move(pacman.position, Direction.SOUTH):
                     pacman.direction = Direction.SOUTH
-        if not game_started:
-            start_sound.play(loops=-1)
-        if game_started:
-            start_sound.stop()
+        # if not game_started:
+        #     start_sound.play(loops=-1)
+        # if game_started:
+        #     start_sound.stop()
         moving = False
         if maze.can_move(pacman.position, pacman.direction):
             moving = True
