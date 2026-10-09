@@ -102,10 +102,6 @@ def create_the_maze(pacman: Pacman) -> None:
                 game_started = True
                 if maze.can_move(pacman.position, Direction.SOUTH):
                     pacman.direction = Direction.SOUTH
-        # if not game_started:
-        #     start_sound.play(loops=-1)
-        # if game_started:
-        #     start_sound.stop()
         moving = False
         if maze.can_move(pacman.position, pacman.direction):
             moving = True
