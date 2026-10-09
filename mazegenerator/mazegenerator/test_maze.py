@@ -25,7 +25,7 @@ def create_the_maze(pacman: Pacman) -> None:
     rows = generator.maze
     maze = Maze(rows)
     pygame.init()
-    speed = (1.7) + (w + h - 38) * 0.1
+    speed = (1.8) + (w + h - 38) * 0.1
     clock = pygame.time.Clock()
     start_sound = pygame.mixer.Sound('/home/sasarbou/Desktop/pacman/pacman-art/sounds/starting.wav')
     eating_sound = pygame.mixer.Sound('/home/sasarbou/Desktop/pacman/pacman-art/sounds/eat_dot.wav')
@@ -167,8 +167,6 @@ def create_the_maze(pacman: Pacman) -> None:
             x = normal.position.x * cell_size + cell_size // 2
             y = normal.position.y * cell_size + cell_size // 2
             pygame.draw.circle(screen, (255, 255, 255), (x, y), 5)
-            # print(pacman.position)
-            # print(maze.can_move(pacman.position, Direction.EAST))
         pygame.display.update()
         clock.tick(60)
     pygame.quit()
