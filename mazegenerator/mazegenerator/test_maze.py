@@ -12,7 +12,7 @@ from create_super_pacgums import create_super_pacgums
 from create_normal_pacgums import create_normal_pacgums
 from create_the_maze import create_maze
 from pacman_directions_path import pacman_picture
-from src.config_parser import ConfigParser
+from parser.config_parser import ConfigParser
 
 
 def create_the_maze(pacman: Pacman) -> None:
