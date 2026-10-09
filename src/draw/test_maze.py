@@ -58,6 +58,7 @@ def create_the_maze(pacman: Pacman) -> None:
                 - pacman_size // 2)
     target_position = pacman.position
     screen = pygame.display.set_mode((width * cell_size, height * cell_size))
+    pygame.display.set_caption("👾Pacman👾")
     # print(config.score)
     # ====== Controlling pacman movements ======
     normal_pacgums = create_normal_pacgums(pacman, rows)
