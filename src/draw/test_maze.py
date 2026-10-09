@@ -69,7 +69,7 @@ def create_the_maze(pacman: Pacman) -> None:
     }
     game_started = False
     if not game_started:
-        start_sound.play(loops=-1)
+        start_sound.play()
     else:
         start_sound.stop()
     while True:
