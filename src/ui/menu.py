@@ -38,10 +38,10 @@ def draw_text(text: str, font: Font, color: tuple[int, int, int], surface, x: in
 def main_menu():
 
     # Define Button Rectangles (X, Y, Width, Height)
-    start_button = pygame.Rect(WIDTH // 2 - 100, 250, 200, 50)
-    highscores_button = pygame.Rect(WIDTH // 2 - 100, 325, 200, 50)
-    instructions_button = pygame.Rect(WIDTH // 2 - 100, 400, 200, 50)
-    Exit_button = pygame.Rect(WIDTH // 2 - 100, 475, 200, 50)
+    start_button = pygame.Rect(WIDTH // 2 - 150, 250, 300, 50)
+    highscores_button = pygame.Rect(WIDTH // 2 - 150, 325, 300, 50)
+    instructions_button = pygame.Rect(WIDTH // 2 - 150, 400, 300, 50)
+    Exit_button = pygame.Rect(WIDTH // 2 - 150, 475, 300, 50)
 
     while True:
 
