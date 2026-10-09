@@ -28,12 +28,8 @@ class GhostName(Enum):
 
 
 class Ghost:
-    def __init__(self, name: GhostName, position: Position, direction: Direction, color: Color, mode: GhostMode):
+    def __init__(self, position: Position):
         self.position = position
-        self.direction = direction
-        self.color = color
-        self.mode = mode
-        self.name = name
 
 
 # ======== Test ========

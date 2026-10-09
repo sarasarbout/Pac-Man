@@ -13,19 +13,21 @@ from create_normal_pacgums import create_normal_pacgums
 from create_the_maze import create_maze
 from pacman_directions_path import pacman_picture
 from src.parser.config_parser import ConfigParser
+from model.ghost import Ghost
+from create_ghosts import draw_ghosts
 
 
 def create_the_maze(pacman: Pacman) -> None:
     parser = ConfigParser("/home/sasarbou/Desktop/pacman/src/config.json")
     config = parser.config_data
     level1 = config.levels[0]
-    w = level1["width"]
-    h = level1["height"]
-    generator = MazeGenerator(size=(w, h), perfect=False, seed=42)
+    width = level1["width"]
+    height = level1["height"]
+    generator = MazeGenerator(size=(width, height), perfect=False, seed=42)
     rows = generator.maze
     maze = Maze(rows)
     pygame.init()
-    speed = (1.8) + (w + h - 38) * 0.1
+    speed = (1.8) + (width + height - 38) * 0.1
     clock = pygame.time.Clock()
     start_sound = pygame.mixer.Sound('/home/sasarbou/Desktop/pacman/pacman-art/sounds/starting.wav')
     eating_sound = pygame.mixer.Sound('/home/sasarbou/Desktop/pacman/pacman-art/sounds/eat_dot.wav')
@@ -33,8 +35,6 @@ def create_the_maze(pacman: Pacman) -> None:
     cell_size = 50
     maze = Maze(generator.maze)
     rows = generator.maze
-    width = len(rows[0])
-    height = len(rows)
 
     # ==== fix the problem of center position with collision with the 42 block =====
     center_x = width // 2
@@ -68,6 +68,12 @@ def create_the_maze(pacman: Pacman) -> None:
         Pacgum(Position(0, height - 1)),
         Pacgum(Position(width - 1, height - 1))
     }
+    ghosts_data = [
+        (Ghost(Position(1, 0)), Path('/home/sasarbou/Desktop/pacman/pacman-art/ghosts/inky.png')),
+        (Ghost(Position(width - 1, 1)), Path('/home/sasarbou/Desktop/pacman/pacman-art/ghosts/clyde.png')),
+        (Ghost(Position(1, height - 1)), Path('/home/sasarbou/Desktop/pacman/pacman-art/ghosts/pinky.png')),
+        (Ghost(Position(width - 1, height - 1)), Path('/home/sasarbou/Desktop/pacman/pacman-art/ghosts/blinky.png'))        
+    ]
     game_started = False
     if not game_started:
         start_sound.play()
@@ -169,6 +175,10 @@ def create_the_maze(pacman: Pacman) -> None:
             x = normal.position.x * cell_size + cell_size // 2
             y = normal.position.y * cell_size + cell_size // 2
             pygame.draw.circle(screen, (255, 255, 255), (x, y), 5)
+
+        # ===== draw the ghosts =====
+        draw_ghosts(rows, width, height, screen, cell_size, ghosts_data)
+
         pygame.display.update()
         clock.tick(60)
     pygame.quit()
