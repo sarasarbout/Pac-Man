@@ -1,6 +1,4 @@
-from mazegenerator import MazeGenerator
 import pygame
-from model.maze import Maze
 
 
 def create_maze(rows, cell_size: int, screen):

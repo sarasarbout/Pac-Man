@@ -1,7 +1,7 @@
 from model.cell import Cell
 from model.direction import Direction
 from model.position import Position
-from mazegenerator import MazeGenerator
+from mazegenerator.mazegenerator import MazeGenerator
 
 
 class Maze:

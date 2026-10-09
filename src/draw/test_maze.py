@@ -1,4 +1,4 @@
-from mazegenerator import MazeGenerator
+from mazegenerator.mazegenerator import MazeGenerator
 import pygame
 from sys import exit
 from model.maze import Maze
@@ -12,7 +12,7 @@ from create_super_pacgums import create_super_pacgums
 from create_normal_pacgums import create_normal_pacgums
 from create_the_maze import create_maze
 from pacman_directions_path import pacman_picture
-from parser.config_parser import ConfigParser
+from src.parser.config_parser import ConfigParser
 
 
 def create_the_maze(pacman: Pacman) -> None:

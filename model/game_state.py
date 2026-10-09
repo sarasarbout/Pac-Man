@@ -25,6 +25,7 @@ class GameState:
         self.status = status
         self.ghost_eaten_count = ghost_eaten_count
 
+
 class Rules:
     def check_collision(self, state: GameState) -> Ghost | None:
         collision = Collision()
