@@ -16,8 +16,7 @@ class GhostMode(Enum):
     """Inky depends on both pacman and blinky to calculate its position"""
     """Clyde: is the funniest one, it chases pacman when he gets close he runs away, it starts from the left-down corner"""
     CHASE = 1
-    SCATTER = 2
-    FRIGHTENED = 3
+    random = 2
 
 
 class GhostName(Enum):
@@ -28,8 +27,11 @@ class GhostName(Enum):
 
 
 class Ghost:
-    def __init__(self, position: Position):
+    def __init__(self, position: Position, direction: Direction, color: Color, mode: GhostMode):
         self.position = position
+        self.direction = direction
+        self.color = color
+        self.mode = mode
 
 
 # ======== Test ========
