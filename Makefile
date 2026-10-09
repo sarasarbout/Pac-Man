@@ -3,3 +3,6 @@ fclean:
 	rm -rf game/__pycache__
 	rm -rf mazegenerator/__pycache__
 	rm -rf mazegenerator/mazegenerator/__pycache__
+
+re: fclean
+	PYTHONPATH=.:mazegenerator python3 src/draw/test_maze.py
