@@ -15,7 +15,7 @@ from pacman_directions_path import pacman_picture
 from src.config_parser import ConfigParser
 
 
-def create_the_maze(pacman: Pacman, speed: float) -> None:
+def create_the_maze(pacman: Pacman) -> None:
     parser = ConfigParser("/home/sasarbou/Desktop/pacman/src/config.json")
     config = parser.config_data
     level1 = config.levels[0]
@@ -25,6 +25,8 @@ def create_the_maze(pacman: Pacman, speed: float) -> None:
     rows = generator.maze
     maze = Maze(rows)
     pygame.init()
+    speed = (1.7) + (w + h - 38) * 0.1
+    clock = pygame.time.Clock()
     start_sound = pygame.mixer.Sound('/home/sasarbou/Desktop/pacman/pacman-art/sounds/starting.wav')
     eating_sound = pygame.mixer.Sound('/home/sasarbou/Desktop/pacman/pacman-art/sounds/eat_dot.wav')
     game_started = False
@@ -33,7 +35,20 @@ def create_the_maze(pacman: Pacman, speed: float) -> None:
     rows = generator.maze
     width = len(rows[0])
     height = len(rows)
-    pacman.position = Position(width // 2, height // 2)
+
+    # ==== fix the problem of center position with collision with the 42 block =====
+    center_x = width // 2
+    center_y = height // 2
+    x = center_x
+    y = center_y
+    while x >= 0:
+        position = Position(x, y)
+        cell = maze.get_cell(position)
+        if cell.walls != 15:
+            pacman.position = position
+            break
+        else:
+            x -= 1
     pacman_size = 40
     pacman_x = (pacman.position.x * cell_size
                 + cell_size // 2
@@ -152,10 +167,13 @@ def create_the_maze(pacman: Pacman, speed: float) -> None:
             x = normal.position.x * cell_size + cell_size // 2
             y = normal.position.y * cell_size + cell_size // 2
             pygame.draw.circle(screen, (255, 255, 255), (x, y), 5)
+            # print(pacman.position)
+            # print(maze.can_move(pacman.position, Direction.EAST))
         pygame.display.update()
+        clock.tick(60)
     pygame.quit()
 
 
 status = GameStatus.READY
-mk = Pacman(Direction.EAST, Position(4, 1), status.READY)
-create_the_maze(mk, 1)
+mk = Pacman(Direction.EAST, Position(0, 0), status.READY)
+create_the_maze(mk)

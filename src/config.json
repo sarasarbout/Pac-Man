@@ -12,8 +12,8 @@
   "levels": [
     {
       "name": "Level 1",
-      "width": 21,
-      "height": 21,
+      "width": 30,
+      "height": 30,
       "seed": 42
     },
     {
