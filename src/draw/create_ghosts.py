@@ -1,6 +1,7 @@
 import pygame
 from model.direction import Direction
 from model.position import Position
+import random
 
 
 def draw_ghosts(rows, width, height, screen, cell_size, ghosts_data) -> None:
@@ -23,7 +24,7 @@ def chase_pacman(ghost, pacman, maze) -> None:
             Direction.SOUTH,
             Direction.WEST
         )
-        if maze.can_move(ghost.position, Direction)
+        if maze.can_move(ghost.position, direction)
     ]
     if not possible_moves:
         return
@@ -38,4 +39,20 @@ def chase_pacman(ghost, pacman, maze) -> None:
             next_position = Position(ghost.position.x, ghost.position.y + 1)
         elif direction == Direction.WEST:
             next_position = Position(ghost.position.x - 1, ghost.position.y)
-        
+        distance = (abs(next_position.x - pacman.position.x)
+                    + (abs(next_position.y - pacman.position.y)))
+        if distance < best_distance:
+            best_distance = distance
+            best_moves = [direction]
+        elif distance == best_distance:
+            best_moves.append(direction)
+    chosen_direction = random.choice(best_moves)
+    if chosen_direction == Direction.NORTH:
+        ghost.position = Position(ghost.position.x, ghost.position.y - 1)
+    elif chosen_direction == Direction.EAST:
+        ghost.position = Position(ghost.position.x + 1, ghost.position.y)
+    elif chosen_direction == Direction.SOUTH:
+        ghost.position = Position(ghost.position.x, ghost.position.y + 1)
+    elif chosen_direction == Direction.WEST:
+        ghost.position = Position(ghost.position.x - 1, ghost.position.y)
+    ghost.direction = chosen_direction

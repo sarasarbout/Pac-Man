@@ -14,7 +14,7 @@ from create_the_maze import create_maze
 from pacman_directions_path import pacman_picture
 from src.parser.config_parser import ConfigParser
 from model.ghost import Ghost
-from create_ghosts import draw_ghosts
+from create_ghosts import draw_ghosts, chase_pacman
 
 
 def create_the_maze(pacman: Pacman) -> None:
@@ -27,8 +27,10 @@ def create_the_maze(pacman: Pacman) -> None:
     rows = generator.maze
     maze = Maze(rows)
     pygame.init()
-    speed = (1.8) + (width + height - 38) * 0.1
+    speed = (2.1) + (width + height - 38) * 0.1
     clock = pygame.time.Clock()
+    last_ghost_move = pygame.time.get_ticks()
+    ghost_move = 250
     start_sound = pygame.mixer.Sound('/home/sasarbou/Desktop/pacman/pacman-art/sounds/starting.wav')
     eating_sound = pygame.mixer.Sound('/home/sasarbou/Desktop/pacman/pacman-art/sounds/eat_dot.wav')
     game_started = False
@@ -86,11 +88,23 @@ def create_the_maze(pacman: Pacman) -> None:
                 exit()
         keys = pygame.key.get_pressed()
         # ===== Allow Pacman to move to his next direction only if he's in the center of the current cell =====
+        current_time = pygame.time.get_ticks()
+        if game_started and current_time - last_ghost_move >= ghost_move:
+            ghost1, image = ghosts_data[3]
+            ghost2, image = ghosts_data[0]
+            chase_pacman(ghost1, pacman, maze)
+            chase_pacman(ghost2, pacman, maze)
+            last_ghost_move = current_time
+            if pacman.position == ghost1.position and pacman.lives > 0:
+                pacman.lives -= 1
+            if pacman.position == ghost2.position and pacman.lives > 0:
+                pacman.lives -= 1
         at_cell_center = (
             pacman_x == pacman.position.x * cell_size + cell_size // 2 - pacman_size // 2
             and
             pacman_y == pacman.position.y * cell_size + cell_size // 2 - pacman_size // 2
         )
+        print(pacman.lives)
         if at_cell_center:
             if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
                 game_started = True
