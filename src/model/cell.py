@@ -10,7 +10,7 @@ class Dots(Enum):
 
 
 class Cell:
-    def __init__(self, walls: int) -> None: # I have to add dots here
+    def __init__(self, walls: int) -> None:
         self.walls = walls
 
     def has_wall(self, direction: Direction) -> bool:

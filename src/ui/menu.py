@@ -1,9 +1,12 @@
 import pygame, sys
 from pygame.font import Font
+
 pygame.init()
 
+#global SCREEN
 WIDTH, HEIGHT = 800, 600
 SCREEN = pygame.display.set_mode((WIDTH, HEIGHT))
+
 pygame.display.set_caption("Main Menu")
 clock = pygame.time.Clock()
 
@@ -79,42 +82,26 @@ def main_menu():
         draw_text("Instructions", FONT, TEXT_COLOR, SCREEN , instructions_button.centerx, instructions_button.centery)
         draw_text("Exit", FONT, TEXT_COLOR, SCREEN , Exit_button.centerx, Exit_button.centery)
 
-
-        pygame.display.flip()
-        clock.tick(60)
-
-
-def run_game():
-    """Placeholder for gameplay loop."""
-    while True:
-        
-        draw_text("Playing the Game", FONT, WHITE, SCREEN, WIDTH // 2, HEIGHT // 2)
-        draw_text("Press ESC to return to Menu", FONT, WHITE, SCREEN, WIDTH // 2, HEIGHT // 2 + 100)
-
+        ##events handling for when we click a button we return a state to the controller 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
-                    return "menu"  # Return to menu state
+                return "exit"
 
+            ##mouse event left click
+
+            elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                if start_button.collidepoint(event.pos):
+                    return "playing"
+                elif highscores_button.collidepoint(event.pos):
+                    return "highscores"
+                elif instructions_button.collidepoint(event.pos):
+                    return "instructions"
+                elif Exit_button.collidepoint(event.pos):
+                    return "exit"
+                
         pygame.display.flip()
         clock.tick(60)
 
 
 
-
-
-#State controller
-def main():
-    state = "menu"
-    while True:
-        if state == "menu":
-            state = main_menu()
-        elif state == "playing":
-            state = run_game()
-
-if __name__ == "__main__":
-    main()
 

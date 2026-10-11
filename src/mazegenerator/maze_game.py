@@ -1,4 +1,5 @@
-from mazegenerator import MazeGenerator
+
+from .mazegenerator import MazeGenerator
 import pygame
 from sys import exit
 import math
@@ -11,14 +12,14 @@ from model.cell import Pacgum
 from model.ghost import Ghost
 from pathlib import Path
 
-
-def create_the_maze(pacman: Pacman, speed: float) -> None:
+## return type is str because well return "menu" when the player press esc.
+def create_the_maze(pacman: Pacman, speed: float) -> str:
     generator = MazeGenerator()
     for row in generator.maze:
         print(row)
     pygame.init()
-    #start_sound = pygame.mixer.Sound('/home/iait-mou/Desktop/Pac-Man/pacman-art/sounds/starting.wav')
-    #eating_sound = pygame.mixer.Sound('/home/iait-mou/Desktop/Pac-Man/pacman-art/sounds/eat_dot.wav')
+    #start_sound = pygame.mixer.Sound('/home/iait-mou/Desktop/Pac-Man/assets/sounds/starting.wav')
+    #eating_sound = pygame.mixer.Sound('/home/iait-mou/Desktop/Pac-Man/assets/sounds/eat_dot.wav')
     game_started = False
     cell_size = 50
     maze = Maze(generator.maze)
@@ -78,6 +79,11 @@ def create_the_maze(pacman: Pacman, speed: float) -> None:
             if event.type == pygame.QUIT:
                 pygame.quit()
                 exit()
+
+            ##when player presses esc we stop and return menu tp the controller
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    return "menu"
         keys = pygame.key.get_pressed()
         # ===== Allow Pacman to move to his next direction only if he's in the center of the current cell =====
         at_cell_center = (
@@ -149,15 +155,15 @@ def create_the_maze(pacman: Pacman, speed: float) -> None:
 
         # ===== Changing Pacman picture depending on his Direction ====
         if moving is False:
-            path = Path('//home/iait-mou/Desktop/Pac-Man/pacman-art/pacman-up/3.png')   # trying to fix this move
+            path = Path('//home/iait-mou/Desktop/Pac-Man/assets/pacman-up/3.png')   # trying to fix this move
         elif pacman.direction == Direction.NORTH:
-            path = Path('/home/iait-mou/Desktop/Pac-Man/pacman-art/pacman-up/1.png')
+            path = Path('/home/iait-mou/Desktop/Pac-Man/assets/pacman-up/1.png')
         elif pacman.direction == Direction.EAST:
-            path = Path('/home/iait-mou/Desktop/Pac-Man/pacman-art/pacman-right/1.png')
+            path = Path('/home/iait-mou/Desktop/Pac-Man/assets/pacman-right/1.png')
         elif pacman.direction == Direction.SOUTH:
-            path = Path('/home/iait-mou/Desktop/Pac-Man/pacman-art/pacman-down/1.png')
+            path = Path('/home/iait-mou/Desktop/Pac-Man/assets/pacman-down/1.png')
         elif pacman.direction == Direction.WEST:
-            path = Path('/home/iait-mou/Desktop/Pac-Man/pacman-art/pacman-left/1.png')
+            path = Path('/home/iait-mou/Desktop/Pac-Man/assets/pacman-left/1.png')
         pacman_image = pygame.image.load(path)
         pacman_image = pygame.transform.scale(pacman_image, (40, 40))
 
@@ -295,6 +301,6 @@ def create_the_maze(pacman: Pacman, speed: float) -> None:
     pygame.quit()
 
 
-status = GameStatus.READY
-mk = Pacman(Direction.EAST, Position(4, 1), status.READY)
-create_the_maze(mk, 0.3)
+#status = GameStatus.READY
+#mk = Pacman(Direction.EAST, Position(4, 1), status.READY)
+#create_the_maze(mk, 0.3)

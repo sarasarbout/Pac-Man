@@ -30,6 +30,8 @@ class Maze:
             new_position = Position(position.x, position.y + 1)
         elif direction == Direction.WEST:
             new_position = Position(position.x - 1, position.y)
+        else:
+            return False
 
         if not (
             0 <= new_position.x < self.width
