@@ -1,71 +1,31 @@
 # Pac-Man configuration file
 # Lines starting with '#' are comments and are ignored by the parser.
 
+# ---------- Global settings ----------
 {
   "highscore_filename": "highscores.json",
-  "lives": 3, #this is a comment
-  "seed": 42,
+  "lives": 3,
   "level_max_time": 90,
 
+  # ---------- Scoring ----------
   "points_per_pacgum": 10,
   "points_per_super_pacgum": 50,
   "points_per_ghost": 200,
 
+  # ---------- Levels (at least 10) ----------
+  # width/height: maze size in cells
+  # pacgum: number of normal pacgums (your own extension)
+  # ghosts: number of ghosts (your own extension)
   "levels": [
-    {
-      "name": "Level 1",
-      "width": 21,
-      "height": 21,
-      "pacgum": 441,
-      "ghosts": 4
-    },
-    {
-      "name": "Level 2",
-      "width": 25,
-      "height": 25,
-      "pacgum": 1300,
-      "ghosts": 5
-    },
-    {
-      "name": "Level 3",
-      "width": 31,
-      "height": 27,
-      "pacgum": 837,
-      "ghosts": 6
-    },
-    {
-      "name": "Level 4",
-      "width": 33,
-      "height": 30,
-      "pacgum": 990
-    },
-    {
-      "name": "Level 5",
-      "width": 35,
-      "height": 31,
-      "pacgum": 1085,
-      "ghosts": 7
-    },
-    {
-      "name": "Level 6",
-      "width": 37,
-      "height": 33,
-      "pacgum": 1188,
-      "ghosts": 8
-    },
-    {
-      "name": "Level 7",
-      "width": 39,
-      "height": 35,
-      "pacgum": 1285,
-      "ghosts": 8
-    },
-    {
-      "name": "Level 8",
-      "width": 41,
-      "height": 37,
-      "pacgum": 1390,
-      "ghosts": 9
-    }
+    { "name": "Level 1",  "width": 21, "height": 21, "pacgum": 42, "seed": 42 },
+    { "name": "Level 2",  "width": 21, "height": 21, "pacgum": 48},
+    { "name": "Level 3",  "width": 23, "height": 23, "pacgum": 55},
+    { "name": "Level 4",  "width": 23, "height": 23, "pacgum": 62},
+    { "name": "Level 5",  "width": 25, "height": 25, "pacgum": 70},
+    { "name": "Level 6",  "width": 25, "height": 25, "pacgum": 78},
+    { "name": "Level 7",  "width": 27, "height": 27, "pacgum": 86},
+    { "name": "Level 8",  "width": 27, "height": 27, "pacgum": 94},
+    { "name": "Level 9",  "width": 29, "height": 29, "pacgum": 102},
+    { "name": "Level 10", "width": 31, "height": 31, "pacgum": 110}
   ]
 }

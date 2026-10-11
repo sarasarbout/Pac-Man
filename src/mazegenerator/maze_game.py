@@ -11,9 +11,10 @@ from model.game_state import GameStatus
 from model.cell import Pacgum
 from model.ghost import Ghost
 from pathlib import Path
+from src.parser.config_parser import GameConfig
 
 ## return type is str because well return "menu" when the player press esc.
-def create_the_maze(pacman: Pacman, speed: float) -> str:
+def create_the_maze(pacman: Pacman, speed: float, config: GameConfig, screen) -> str:
     generator = MazeGenerator()
     for row in generator.maze:
         print(row)
@@ -40,7 +41,7 @@ def create_the_maze(pacman: Pacman, speed: float) -> str:
                 + cell_size // 2
                 - pacman_size // 2)
     target_position = pacman.position
-    screen = pygame.display.set_mode((width * cell_size + menu_width, height * cell_size))
+    #screen = pygame.display.set_mode((width * cell_size + menu_width, height * cell_size))
     maze_color = (255, 0, 0)
     super_pacgums = {
         Pacgum(Position(0, 0)),
