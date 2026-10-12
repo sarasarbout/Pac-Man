@@ -1,10 +1,13 @@
-from parser.config_parser import ConfigParser, ConfigError
+from config_parser import ConfigParser, ConfigError
 
 
 def main() -> None:
     try:
-        parser = ConfigParser("config.json")
-        config = parser.config_data
+        ##load config data
+        parser = ConfigParser("/home/iait-mou/Desktop/Pac-Man/src/config.json")
+        config: GameConfig = parser.config_data
+        ##initialize pygame
+        pygame.init()
 
         print("\n--- CONFIG LOADED ---")
         print("Highscore file:", config.highscore_filename)

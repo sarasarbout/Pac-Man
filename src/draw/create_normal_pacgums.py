@@ -1,6 +1,6 @@
-from model.pacman import Pacman
-from model.position import Position
-from model.cell import Pacgum
+from src.model.pacman import Pacman
+from src.model.position import Position
+from src.model.cell import Pacgum
 from typing import List
 
 

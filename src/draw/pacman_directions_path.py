@@ -1,6 +1,6 @@
 from pathlib import Path
-from model.direction import Direction
-from model.pacman import Pacman
+from src.model.direction import Direction
+from src.model.pacman import Pacman
 
 
 def pacman_picture(pacman: Pacman) -> Path:

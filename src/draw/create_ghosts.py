@@ -1,6 +1,6 @@
 import pygame
-from model.direction import Direction
-from model.position import Position
+from src.model.direction import Direction
+from src.model.position import Position
 import random
 
 

@@ -1,24 +1,24 @@
-from mazegenerator.mazegenerator import MazeGenerator
+from src.mazegenerator.mazegenerator import MazeGenerator
 import pygame
 from sys import exit
-from model.maze import Maze
-from model.position import Position
-from model.direction import Direction
-from model.pacman import Pacman
-from model.game_state import GameStatus
-from model.cell import Pacgum
+from src.model.maze import Maze
+from src.model.position import Position
+from src.model.direction import Direction
+from src.model.pacman import Pacman
+from src.model.game_state import GameStatus
+from src.model.cell import Pacgum
 from pathlib import Path
 from create_super_pacgums import create_super_pacgums
 from create_normal_pacgums import create_normal_pacgums
 from create_the_maze import create_maze
 from pacman_directions_path import pacman_picture
 from src.parser.config_parser import ConfigParser
-from model.ghost import Ghost
+from src.model.ghost import Ghost
 from create_ghosts import draw_ghosts, chase_pacman
 
 
 def create_the_maze(pacman: Pacman) -> None:
-    parser = ConfigParser("/home/sasarbou/Desktop/pacman/src/config.json")
+    parser = ConfigParser("/Users/sarasarbout/Desktop/Pac-Man/src/config.json")
     config = parser.config_data
     level1 = config.levels[0]
     width = level1["width"]
@@ -31,8 +31,8 @@ def create_the_maze(pacman: Pacman) -> None:
     clock = pygame.time.Clock()
     last_ghost_move = pygame.time.get_ticks()
     ghost_move = 250
-    start_sound = pygame.mixer.Sound('/home/sasarbou/Desktop/pacman/pacman-art/sounds/starting.wav')
-    eating_sound = pygame.mixer.Sound('/home/sasarbou/Desktop/pacman/pacman-art/sounds/eat_dot.wav')
+    start_sound = pygame.mixer.Sound('/Users/sarasarbout/Desktop/Pac-Man/assets/sounds/starting.wav')
+    eating_sound = pygame.mixer.Sound('/Users/sarasarbout/Desktop/Pac-Man/assets/sounds/eat_dot.wav')
     game_started = False
     cell_size = 50
     maze = Maze(generator.maze)
@@ -71,10 +71,10 @@ def create_the_maze(pacman: Pacman) -> None:
         Pacgum(Position(width - 1, height - 1))
     }
     ghosts_data = [
-        (Ghost(Position(1, 0)), Path('/home/sasarbou/Desktop/pacman/pacman-art/ghosts/inky.png')),
-        (Ghost(Position(width - 1, 1)), Path('/home/sasarbou/Desktop/pacman/pacman-art/ghosts/clyde.png')),
-        (Ghost(Position(1, height - 1)), Path('/home/sasarbou/Desktop/pacman/pacman-art/ghosts/pinky.png')),
-        (Ghost(Position(width - 1, height - 1)), Path('/home/sasarbou/Desktop/pacman/pacman-art/ghosts/blinky.png'))        
+        (Ghost(Position(1, 0)), Path('/Users/sarasarbout/Desktop/Pac-Man/assets/ghosts/inky.png')),
+        (Ghost(Position(width - 1, 1)), Path('/Users/sarasarbout/Desktop/Pac-Man/assets/ghosts/clyde.png')),
+        (Ghost(Position(1, height - 1)), Path('/Users/sarasarbout/Desktop/Pac-Man/assets/ghosts/pinky.png')),
+        (Ghost(Position(width - 1, height - 1)), Path('/Users/sarasarbout/Desktop/Pac-Man/assets/ghosts/blinky.png'))        
     ]
     game_started = False
     if not game_started:
@@ -164,7 +164,7 @@ def create_the_maze(pacman: Pacman) -> None:
 
         # ===== Changing Pacman picture depending on his Direction ====
         if moving is False:
-            path = Path('/home/sasarbou/Desktop/pacman/pacman-art/pacman-up/3.png')  # trying to fix this move
+            path = Path('/Users/sarasarbout/Desktop/Pac-Man/assets/pacman-up/3.png')  # trying to fix this move
         else:
             path = pacman_picture(pacman)
         pacman_image = pygame.image.load(path)
