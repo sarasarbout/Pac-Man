@@ -1,29 +1,35 @@
-from config_parser import ConfigParser, ConfigError
+from src.parser.config_parser import ConfigParser, ConfigError, GameConfig
+from src.ui.controller import main as run_controller
+import pygame
+import sys
 
 
 def main() -> None:
     try:
-        ##load config data
-        parser = ConfigParser("/home/iait-mou/Desktop/Pac-Man/src/config.json")
+        # 1. Load configuration
+        parser = ConfigParser(
+            "/home/iait-mou/Desktop/Pac-Man/src/config.json"
+        )
         config: GameConfig = parser.config_data
-        ##initialize pygame
+
+        # 2. Initialize Pygame
         pygame.init()
 
-        print("\n--- CONFIG LOADED ---")
-        print("Highscore file:", config.highscore_filename)
-        print("Lives:", config.lives)
-        print("Level max time:", config.level_max_time)
-        print("Pacgum points:", config.points_per_pacgum)
-        print("Super pacgum points:", config.points_per_super_pacgum)
-        print("Ghost points:", config.points_per_ghost)
+        # 3. Create the display using the configured dimensions
+        screen = pygame.display.set_mode(
+            (config.screen_width, config.screen_height)
+        )
+        pygame.display.set_caption("Pac-Man")
 
-        print("\n--- LEVELS ---")
-        for i, level in enumerate(config.levels, start=1):
-            print(f"Level {i}: {level}")
+        # 4. Start the state controller
+        run_controller(config, screen)
 
     except ConfigError as error:
         print(f"Configuration error: {error}")
 
+    finally:
+        pygame.quit()
 
-if __name__ == "__main__":
+
+if __name__ == "main":
     main()

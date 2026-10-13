@@ -2,7 +2,7 @@ from dataclasses import dataclass, field, fields
 from typing import Any
 import json
 import os
-import random
+
 
 class ConfigError(Exception):
     """Custom exception for configuration errors."""
@@ -12,6 +12,8 @@ class ConfigError(Exception):
 @dataclass
 class GameConfig:
     """Store validated configuration values for the game."""
+    screen_width: int = 1200
+    screen_height: int = 800
 
     highscore_filename: str = "highscores.json"
     lives: int = 3
@@ -22,7 +24,7 @@ class GameConfig:
     points_per_ghost: int = 200
 
     levels: list[dict[str, Any]] = field(default_factory=lambda: [
-        {"width": 21, "height": 17, "pacgum": 42, "seed": None},
+        {"width": 21, "height": 17, "pacgum": 42, "seed": 42},
         {"width": 23, "height": 17, "pacgum": 48, "seed": None},
         {"width": 25, "height": 19, "pacgum": 54, "seed": None},
         {"width": 25, "height": 19, "pacgum": 55, "seed": None},
@@ -290,14 +292,23 @@ class ConfigParser:
         """Build a validated GameConfig object."""
 
         default = GameConfig()
-
         return GameConfig(
+            screen_height=self._parse_integer(
+                data,
+                "screen_height",
+                default.screen_height,
+                minimum=800),
+            screen_width=self._parse_integer(
+                data,
+                "screen_width",
+                default.screen_width,
+                minimum=1200
+            ),
             highscore_filename=self._parse_string(
                 data,
                 "highscore_filename",
                 default.highscore_filename
             ),
-
             lives=self._parse_integer(
                 data,
                 "lives",

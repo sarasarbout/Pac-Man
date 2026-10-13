@@ -1,108 +1,126 @@
-import pygame, sys
+import pygame
 from pygame.font import Font
-
-pygame.init()
-
+from src.parser.config_parser import GameConfig
 
 
-def draw_text(text: str, font: Font, color: tuple[int, int, int], surface, x: int , y: int)-> None:
+def draw_text(
+    text: str,
+    font: Font,
+    color: tuple[int, int, int],
+    surface: pygame.Surface,
+    x: int,
+    y: int
+) -> None:
     text_obj = font.render(text, True, color)
-    text_rect = text_obj.get_rect()
-    text_rect.center = (x, y)
+    text_rect = text_obj.get_rect(center=(x, y))
     surface.blit(text_obj, text_rect)
 
 
-def main_menu(config, screen):
-    WIDTH = screen.get_width()
-    HEIGHT = screen.get_height()
-    
-    #screen = pygame.display.set_mode((WIDTH, HEIGHT))
+def main_menu(
+    config: GameConfig,
+    screen: pygame.Surface
+) -> str:
+
+    WIDTH = config.screen_width
+    HEIGHT = config.screen_height
 
     pygame.display.set_caption("Main Menu")
     clock = pygame.time.Clock()
 
     WHITE = (255, 255, 255)
-    GREEN = (50, 200, 50)
-
-
-
-    BG_IMG = pygame.image.load("/home/iait-mou/Desktop/Pac-Man/assets/Background.png")
-    #BG_IMG = pygame.transform.scale(BG_IMG, (800, 600))
-    #convert_alpha preserves transparent parts of the img 
-    LOGO_IMG = pygame.image.load("/home/iait-mou/Desktop/Pac-Man/assets/pacman_logo.png").convert_alpha()
-    #scale resize to 300*120 [ixels]
-    LOGO_IMG = pygame.transform.scale(LOGO_IMG, (300, 120))
-
-    BG_COLOR = (0, 0, 0)
     BUTTON_COLOR = (0, 0, 0)
     HOVER_COLOR = (100, 200, 100)
-    TEXT_COLOR = (255, 255, 255)
 
-    #fonts
-    FONT = pygame.font.SysFont("Arial", 40)
+    # Load images after the display has been initialized.
+    bg_img = pygame.image.load(
+        "/home/iait-mou/Desktop/Pac-Man/assets/Background.png"
+    ).convert()
 
-    # Define Button Rectangles (X, Y, Width, Height)
-    start_button = pygame.Rect(WIDTH // 2 - 150, 250, 300, 50)
-    highscores_button = pygame.Rect(WIDTH // 2 - 150, 325, 300, 50)
-    instructions_button = pygame.Rect(WIDTH // 2 - 150, 400, 300, 50)
-    Exit_button = pygame.Rect(WIDTH // 2 - 150, 475, 300, 50)
+    bg_img = pygame.transform.scale(
+        bg_img, (WIDTH, HEIGHT)
+    )
+
+    logo_img = pygame.image.load(
+        "/home/iait-mou/Desktop/Pac-Man/assets/pacman_logo.png"
+    ).convert_alpha()
+
+    logo_img = pygame.transform.scale(logo_img, (300, 120))
+
+    font = pygame.font.SysFont("Arial", 32)
+
+    button_width = 300
+    button_height = 50
+    button_x = (WIDTH - button_width) // 2
+
+    # Position the buttons relative to the window height.
+    button_positions = [
+        int(HEIGHT * 0.42),
+        int(HEIGHT * 0.54),
+        int(HEIGHT * 0.66),
+        int(HEIGHT * 0.78)
+    ]
+
+    start_button = pygame.Rect(
+        button_x, button_positions[0], button_width, button_height
+    )
+    highscores_button = pygame.Rect(
+        button_x, button_positions[1], button_width, button_height
+    )
+    instructions_button = pygame.Rect(
+        button_x, button_positions[2], button_width, button_height
+    )
+    exit_button = pygame.Rect(
+        button_x, button_positions[3], button_width, button_height
+    )
+
+    buttons = [
+        (start_button, "Start Game", "playing"),
+        (highscores_button, "View Highscores", "highscores"),
+        (instructions_button, "Instructions", "instructions"),
+        (exit_button, "Exit", "exit")
+    ]
 
     while True:
-
-        screen.blit(BG_IMG, (0,0))
-
-        logo_rect = LOGO_IMG.get_rect(center = (WIDTH // 2, 100))
-        screen.blit(LOGO_IMG, logo_rect)
-
         mouse_pos = pygame.mouse.get_pos()
-        
-        if start_button.collidepoint(mouse_pos):
-            pygame.draw.rect(screen, HOVER_COLOR, start_button, border_radius=10)
-        else:
-            pygame.draw.rect(screen, BUTTON_COLOR, start_button, border_radius=10)
 
-        if highscores_button.collidepoint(mouse_pos):
-            pygame.draw.rect(screen, HOVER_COLOR, highscores_button, border_radius=10)
-        else:
-            pygame.draw.rect(screen, BUTTON_COLOR, highscores_button, border_radius=10)
-
-        if instructions_button.collidepoint(mouse_pos):
-            pygame.draw.rect(screen, HOVER_COLOR, instructions_button, border_radius=10)
-        else:
-            pygame.draw.rect(screen, BUTTON_COLOR, instructions_button, border_radius=10)
-
-        if Exit_button.collidepoint(mouse_pos):
-            pygame.draw.rect(screen, HOVER_COLOR, Exit_button, border_radius=10)
-        else:
-            pygame.draw.rect(screen, BUTTON_COLOR, Exit_button, border_radius=10)
-
-
-
-        draw_text("Start Game", FONT, TEXT_COLOR, screen , start_button.centerx, start_button.centery)
-        draw_text("View Highscores", FONT, TEXT_COLOR, screen , highscores_button.centerx, highscores_button.centery)
-        draw_text("Instructions", FONT, TEXT_COLOR, screen , instructions_button.centerx, instructions_button.centery)
-        draw_text("Exit", FONT, TEXT_COLOR, screen , Exit_button.centerx, Exit_button.centery)
-
-        ##events handling for when we click a button we return a state to the controller 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return "exit"
 
-            ##mouse event left click
+            if (
+                event.type == pygame.MOUSEBUTTONDOWN
+                and event.button == 1
+            ):
+                for button, label, next_state in buttons:
+                    if button.collidepoint(event.pos):
+                        return next_state
 
-            elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-                if start_button.collidepoint(event.pos):
-                    return "playing"
-                elif highscores_button.collidepoint(event.pos):
-                    return "highscores"
-                elif instructions_button.collidepoint(event.pos):
-                    return "instructions"
-                elif Exit_button.collidepoint(event.pos):
-                    return "exit"
-                
+        screen.blit(bg_img, (0, 0))
+
+        logo_rect = logo_img.get_rect(
+            center=(WIDTH // 2, int(HEIGHT * 0.16))
+        )
+        screen.blit(logo_img, logo_rect)
+
+        for button, label, next_state in buttons:
+            color = (
+                HOVER_COLOR
+                if button.collidepoint(mouse_pos)
+                else BUTTON_COLOR
+            )
+
+            pygame.draw.rect(
+                screen, color, button, border_radius=10
+            )
+
+            draw_text(
+                label,
+                font,
+                WHITE,
+                screen,
+                button.centerx,
+                button.centery
+            )
+
         pygame.display.flip()
         clock.tick(60)
-
-
-
-
