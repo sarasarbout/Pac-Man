@@ -12,8 +12,8 @@ class ConfigError(Exception):
 @dataclass
 class GameConfig:
     """Store validated configuration values for the game."""
-    screen_width: int = 1200
-    screen_height: int = 800
+    screen_width: int = 600
+    screen_height: int = 400
 
     highscore_filename: str = "highscores.json"
     lives: int = 3
@@ -22,6 +22,7 @@ class GameConfig:
     points_per_pacgum: int = 10
     points_per_super_pacgum: int = 50
     points_per_ghost: int = 200
+    cell_size: int = 50
 
     levels: list[dict[str, Any]] = field(default_factory=lambda: [
         {"width": 21, "height": 17, "pacgum": 42, "seed": 42},
@@ -191,6 +192,14 @@ class ConfigParser:
         pacgum = level_data.get("pacgum")
         seed = level_data.get("seed")
 
+        name = level_data.get("name", f"Level {index + 1}")
+
+        if not isinstance(name, str) or not name.strip():
+            print(
+                f"Warning: level[{index}] 'name' is invalid. "
+                f"Using default: Level {index + 1}"
+            )
+            name = f"Level {index + 1}"
         if (
             not isinstance(width, int)
             or isinstance(width, bool)
@@ -233,12 +242,25 @@ class ConfigParser:
                 f"Using random seed."
             )
             seed = None
+        time = level_data.get("time", 90)
 
+        if (
+            not isinstance(time, int)
+            or isinstance(time, bool)
+            or time < 1
+        ):
+            print(
+                f"Warning: level[{index}] 'time' is invalid. "
+                f"Using default: 90"
+            )
+            time = 90
         return {
+            "name": name,
             "width": width,
             "height": height,
             "pacgum": pacgum,
-            "seed": seed
+            "seed": seed,
+            "time": time
         }
 
     def _parse_levels(
@@ -285,6 +307,7 @@ class ConfigParser:
                 "Using seed 42."
             )
             parsed_levels[0]["seed"] = 42
+        
 
         return parsed_levels
 
@@ -297,12 +320,12 @@ class ConfigParser:
                 data,
                 "screen_height",
                 default.screen_height,
-                minimum=800),
+                minimum=750),
             screen_width=self._parse_integer(
                 data,
                 "screen_width",
                 default.screen_width,
-                minimum=1200
+                minimum=750
             ),
             highscore_filename=self._parse_string(
                 data,

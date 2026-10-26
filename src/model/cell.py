@@ -3,12 +3,6 @@ from enum import Enum
 from src.model.position import Position
 
 
-class Dots(Enum):
-    SMALL = 1
-    BIG = 2
-    NONE = 3
-
-
 class Cell:
     def __init__(self, walls: int) -> None:
         self.walls = walls

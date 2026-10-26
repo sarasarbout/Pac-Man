@@ -1,6 +1,11 @@
 import pygame
 from pygame.font import Font
 from src.parser.config_parser import GameConfig
+from pathlib import Path
+
+# generate.py is in project_root/src/draw/
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+ASSETS_DIR = PROJECT_ROOT / "assets"
 
 
 def draw_text(
@@ -28,12 +33,15 @@ def main_menu(
     clock = pygame.time.Clock()
 
     WHITE = (255, 255, 255)
-    BUTTON_COLOR = (0, 0, 0)
+    BUTTON_COLOR = ("Blue")
     HOVER_COLOR = (100, 200, 100)
 
     # Load images after the display has been initialized.
+    # bg_img = pygame.image.load(
+    #     ASSETS_DIR / "Background.png"
+    # ).convert()
     bg_img = pygame.image.load(
-        "/home/iait-mou/Desktop/Pac-Man/assets/Background.png"
+        ASSETS_DIR / "main_menu.png"
     ).convert()
 
     bg_img = pygame.transform.scale(
@@ -41,7 +49,7 @@ def main_menu(
     )
 
     logo_img = pygame.image.load(
-        "/home/iait-mou/Desktop/Pac-Man/assets/pacman_logo.png"
+        ASSETS_DIR / "pacman_logo.png"
     ).convert_alpha()
 
     logo_img = pygame.transform.scale(logo_img, (300, 120))

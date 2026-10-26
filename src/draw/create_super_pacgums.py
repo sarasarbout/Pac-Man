@@ -1,16 +1,19 @@
-from src.model.cell import Pacgum
-from src.model.position import Position
 import pygame
 from src.model.pacman import Pacman
 
 
-def create_super_pacgums(width: int, height: int, cell_size: int, screen, pacman: Pacman, super_pacgums, config) -> None:
-    eating_sound = pygame.mixer.Sound('/Users/sarasarbout/Desktop/Pac-Man/assets/sounds/eat_dot.wav')
+def create_super_pacgums(
+    width: int, height: int, cell_size: int, screen, pacman: Pacman,
+    super_pacgums, config
+) -> bool:
+
+    eaten = False
     for pacgum in super_pacgums.copy():
         if pacgum.position == pacman.position:
             super_pacgums.remove(pacgum)
+            eaten = True
             pacman.score += (config.points_per_super_pacgum)
-            eating_sound.play()
+            eaten = True
             break
     for pacgum in super_pacgums:
         x = pacgum.position.x * cell_size + cell_size // 2
@@ -21,3 +24,4 @@ def create_super_pacgums(width: int, height: int, cell_size: int, screen, pacman
             (x, y),
             10
         )
+    return eaten

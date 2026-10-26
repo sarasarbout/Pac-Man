@@ -10,11 +10,11 @@ while True:
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
-            
+
         # Check for left click
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             print("Left mouse button clicked!")
-            
+
             # Optional: Get the exact (x, y) coordinates of the click
             click_pos = event.pos
             print(f"Clicked at coordinates: {click_pos}")
