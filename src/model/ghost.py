@@ -12,6 +12,7 @@ class Color(Enum):
 class GhostMode(Enum):
     CHASE = 1
     frightened = 2
+    DEAD = 3
 
 
 class GhostName(Enum):
@@ -26,3 +27,7 @@ class Ghost:
         self.position = position
         self.mode = GhostMode.CHASE
         self.name = name
+        self.frightened_until = 0
+        self.x = position.x * 50
+        self.y = position.y * 50
+        self.dead_until = 0

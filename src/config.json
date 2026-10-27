@@ -13,7 +13,7 @@
   "points_per_ghost": 200,
 
   "levels": [
-    { "name": "Level 1",  "width": 17, "height": 17, "pacgum": 15, "seed": 42, "time": 10},
+    { "name": "Level 1",  "width": 17, "height": 17, "pacgum": 5, "seed": 42, "time": 1000},
     { "name": "Level 2",  "width": 21, "height": 21, "pacgum": 48, "time": 1000},
     { "name": "Level 3",  "width": 23, "height": 23, "pacgum": 55, "time": 1200},
     { "name": "Level 4",  "width": 23, "height": 23, "pacgum": 62, "time": 1400},

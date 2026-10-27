@@ -44,11 +44,11 @@ class MazeGenerator:
         return self._exitx, self._exity
 
     def generate(self, seed: int = 0) -> None:
-        #random.seed(seed) if seed > 0 else random.seed()
-        if seed is not None and seed > 0:
-            random.seed(seed)
-        else:
-            random.seed()
+        random.seed(seed) if seed > 0 else random.seed()
+        #if seed is not None and seed > 0:
+        #    random.seed(seed)
+        #else:
+        #    random.seed()
         self._seed = seed
         self._create_empty_maze()
         self._add_42_to_maze()

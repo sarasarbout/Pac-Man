@@ -52,6 +52,7 @@ def find_path_astar(start, goal, maze):
         Direction.SOUTH,
         Direction.WEST,
     ]
+    occupied_paths = []
 
     counter = count()
     open_set = [
