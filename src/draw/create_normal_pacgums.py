@@ -11,8 +11,6 @@ def create_normal_pacgums(pacman: Pacman, rows, level_index, config) -> List[Pac
     height = len(rows)
 
     pacgums_number = config.levels[level_index]["pacgum"]
-
-    # print(pacgums_number)
     super_pacgums = {
         Pacgum(Position(0, 0)),
         Pacgum(Position(width - 1, 0)),

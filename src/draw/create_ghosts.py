@@ -110,7 +110,7 @@ def find_path_astar(start, goal, maze):
     return []
 
 
-def chase_pacman(ghost, pacman, maze) -> None:
+def chase_pacman(ghost, pacman, maze, ghosts) -> None:
     path = find_path_astar(
         ghost.position,
         pacman.position,
@@ -119,28 +119,35 @@ def chase_pacman(ghost, pacman, maze) -> None:
 
     if not path:
         return
+    occupied_positions = {
+        other.position
+        for other in ghosts
+        if other != ghost and other.mode != GhostMode.DEAD
+    }
+   
 
     chosen_direction = path[0]
 
     if chosen_direction == Direction.NORTH:
-        ghost.position = Position(
+        next_position = Position(
             ghost.position.x, ghost.position.y - 1
         )
     elif chosen_direction == Direction.EAST:
-        ghost.position = Position(
+        next_position = Position(
             ghost.position.x + 1, ghost.position.y
         )
     elif chosen_direction == Direction.SOUTH:
-        ghost.position = Position(
+        next_position = Position(
             ghost.position.x, ghost.position.y + 1
         )
     elif chosen_direction == Direction.WEST:
-        ghost.position = Position(
+        next_position = Position(
             ghost.position.x - 1, ghost.position.y
         )
-
+    if next_position in occupied_positions:
+            return []
+    ghost.position = next_position
     ghost.direction = chosen_direction
-
 
 def walk_away(ghost, pacman, maze) -> None:
     possible_moves = [

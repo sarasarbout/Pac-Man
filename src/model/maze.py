@@ -40,15 +40,3 @@ class Maze:
             return False
 
         return True
-
-
-# ==== Test =====
-# generator = MazeGenerator()
-# maze = Maze(generator.maze)
-
-# position = Position(0, 0)
-
-# print(maze.has_wall(position, Direction.NORTH))
-# print(maze.has_wall(position, Direction.EAST))
-# print(maze.has_wall(position, Direction.WEST))
-# print(maze.has_wall(position, Direction.SOUTH))

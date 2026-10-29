@@ -10,11 +10,3 @@ class Pacman:
         self.lives = lives
         self.score = score
         self.mode = mode
-
-
-# ====== Test =======
-
-# mk = Pacman(Direction.EAST, Position(4, 1))
-# print(mk.direction)
-# print(mk.position)
-# print(mk.lives)

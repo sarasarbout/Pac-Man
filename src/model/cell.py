@@ -14,10 +14,3 @@ class Cell:
 class Pacgum:
     def __init__(self, position: Position) -> None:
         self.position = position
-
-
-# cell = Cell(3)
-# print(cell.has_Wall(Direction.NORTH))
-# print(cell.has_Wall(Direction.EAST))
-# print(cell.has_Wall(Direction.SOUTH))
-# print(cell.has_Wall(Direction.WEST))

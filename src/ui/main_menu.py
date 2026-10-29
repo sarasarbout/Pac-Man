@@ -26,6 +26,7 @@ def main_menu(
     screen: pygame.Surface
 ) -> str:
 
+    intro = False
     WIDTH = config.screen_width
     HEIGHT = config.screen_height
 
@@ -36,14 +37,10 @@ def main_menu(
     BUTTON_COLOR = ("Blue")
     HOVER_COLOR = (100, 200, 100)
 
-    # Load images after the display has been initialized.
-    # bg_img = pygame.image.load(
-    #     ASSETS_DIR / "Background.png"
-    # ).convert()
     bg_img = pygame.image.load(
         ASSETS_DIR / "main_menu.png"
     ).convert()
-
+    intro_sound = pygame.mixer.Sound(ASSETS_DIR / "sounds" / "intro.mp3")
     bg_img = pygame.transform.scale(
         bg_img, (WIDTH, HEIGHT)
     )
@@ -90,7 +87,8 @@ def main_menu(
 
     while True:
         mouse_pos = pygame.mouse.get_pos()
-
+        if not intro:
+            intro_sound.play()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return "exit"
@@ -99,11 +97,39 @@ def main_menu(
                 event.type == pygame.MOUSEBUTTONDOWN
                 and event.button == 1
             ):
-                for button, label, next_state in buttons:
-                    if button.collidepoint(event.pos):
-                        return next_state
+                if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                    for button, label, next_state in buttons:
+                        if button.collidepoint(event.pos):
+                            intro_sound.stop()
+                            return next_state
 
         screen.blit(bg_img, (0, 0))
+
+        # Cheat mode instruction
+        hint_font = pygame.font.SysFont("Arial", 24, bold=True)
+
+        hint_text = "F1 - CHEAT MODE"
+        hint_surface = hint_font.render(
+            hint_text, True, (255, 230, 0)
+        )
+
+        hint_rect = hint_surface.get_rect(
+            bottomright=(WIDTH - 25, HEIGHT - 25)
+        )
+
+        # Dark background behind the text
+        panel = hint_rect.inflate(30, 18)
+        pygame.draw.rect(
+            screen, (5, 5, 35), panel, border_radius=10
+        )
+
+        # Blue border for the Pac-Man theme
+        pygame.draw.rect(
+            screen, (0, 70, 255), panel, width=2, border_radius=10
+        )
+
+        screen.blit(hint_surface, hint_rect)
+        
 
         logo_rect = logo_img.get_rect(
             center=(WIDTH // 2, int(HEIGHT * 0.16))

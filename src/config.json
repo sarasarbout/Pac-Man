@@ -2,8 +2,8 @@
 
 {
   "highscore_filename": "highscores.json",
-  "screen_width": 1500,
-  "screen_height": 1750,
+  "screen_width": 2500,
+  "screen_height": 2750,
   "lives": 3,
   "level_max_time": 90,
   "cell_size": 50,
@@ -13,15 +13,15 @@
   "points_per_ghost": 200,
 
   "levels": [
-    { "name": "Level 1",  "width": 17, "height": 17, "pacgum": 5, "seed": 42, "time": 1000},
-    { "name": "Level 2",  "width": 21, "height": 21, "pacgum": 48, "time": 1000},
-    { "name": "Level 3",  "width": 23, "height": 23, "pacgum": 55, "time": 1200},
-    { "name": "Level 4",  "width": 23, "height": 23, "pacgum": 62, "time": 1400},
-    { "name": "Level 5",  "width": 25, "height": 25, "pacgum": 70, "time": 1600},
-    { "name": "Level 6",  "width": 25, "height": 25, "pacgum": 78, "time": 1800},
-    { "name": "Level 7",  "width": 27, "height": 27, "pacgum": 86, "time": 2000},
-    { "name": "Level 8",  "width": 27, "height": 27, "pacgum": 94, "time": 2200},
-    { "name": "Level 9",  "width": 29, "height": 29, "pacgum": 102, "time": 2400},
-    { "name": "Level 10", "width": 31, "height": 31, "pacgum": 110, "time": 2600}
+    { "name": "Level 1",  "width": 18, "height": 18, "pacgum": 10, "seed": 42, "time": 500},
+    { "name": "Level 2",  "width": 21, "height": 21, "pacgum": 48, "time": 70},
+    { "name": "Level 3",  "width": 23, "height": 23, "pacgum": 55, "time": 90},
+    { "name": "Level 4",  "width": 23, "height": 23, "pacgum": 62, "time": 100},
+    { "name": "Level 5",  "width": 25, "height": 25, "pacgum": 70, "time": 110},
+    { "name": "Level 6",  "width": 25, "height": 25, "pacgum": 78, "time": 120},
+    { "name": "Level 7",  "width": 27, "height": 27, "pacgum": 86, "time": 130},
+    { "name": "Level 8",  "width": 27, "height": 27, "pacgum": 94, "time": 140},
+    { "name": "Level 9",  "width": 29, "height": 29, "pacgum": 102, "time": 150},
+    { "name": "Level 10", "width": 31, "height": 31, "pacgum": 110, "time": 160}
   ]
 }

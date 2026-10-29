@@ -10,7 +10,7 @@ from pathlib import Path
 from src.draw.create_super_pacgums import create_super_pacgums
 from src.draw.create_normal_pacgums import create_normal_pacgums
 from src.draw.create_the_maze import create_maze
-from src.draw.pacman_utils import pacman_picture, respawn_pacman
+from src.draw.utils import pacman_picture, respawn_pacman, move_only_center, handle_events
 from src.parser.config_parser import GameConfig
 from src.model.ghost import Ghost, GhostMode, GhostName
 from src.draw.create_ghosts import (
@@ -29,6 +29,7 @@ def create_the_maze(
     level: dict,
     level_index: int,
 ) -> str:
+
     width = level["width"]
     height = level["height"]
     generator = MazeGenerator(
@@ -40,15 +41,18 @@ def create_the_maze(
     pygame.init()
     rows = generator.maze
     maze = Maze(rows)
-    speed = (9) + (width + height - 38) * 0.1
+
+    speed = (5) + (width + height - 38) * 0.2
     clock = pygame.time.Clock()
     last_ghost_move = pygame.time.get_ticks()
     start_time = pygame.time.get_ticks()
-
     ghost_move = 700
+
     start_sound = pygame.mixer.Sound(ASSETS_DIR / "sounds"/"starting.wav")
     eating_sound = pygame.mixer.Sound(ASSETS_DIR / "sounds"/"eat_dot.wav")
     fail_sound = pygame.mixer.Sound(ASSETS_DIR / "sounds" / "fail.flac")
+    got_eaten = pygame.mixer.Sound(ASSETS_DIR / "sounds" / "got_eaten.mp3")
+    
     game_started = False
     cell_size = min(config.screen_width // len(rows[0]), config.screen_height // len(rows))
     maze = Maze(generator.maze)
@@ -106,7 +110,7 @@ def create_the_maze(
             ASSETS_DIR / "ghosts" / "inky.png",
         ),
     ]
-
+    ghosts = [g for g, _ in ghosts_data]
     game_started = False
     if not game_started:
         start_sound.play()
@@ -114,29 +118,13 @@ def create_the_maze(
         start_sound.stop()
     frightened_until = 0
     while True:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                return "exit"
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
-                    return "menu"
-                elif event.key in (pygame.K_RIGHT, pygame.K_d):
-                    next_direction = Direction.EAST
-                elif event.key in (pygame.K_LEFT, pygame.K_l):
-                    next_direction = Direction.WEST
-                elif event.key in (pygame.K_UP, pygame.K_w):
-                    next_direction = Direction.NORTH
-                elif event.key in (pygame.K_DOWN, pygame.K_s):
-                    next_direction = Direction.SOUTH
-                elif event.key == pygame.K_SPACE:
-                    return "pause_menu"
-
+        # ==== handle_events() checks the events done with pygame ====
+        next_direction = handle_events(next_direction)
         keys = pygame.key.get_pressed()
         current_time = pygame.time.get_ticks()
         for ghost, _ in ghosts_data:
             if ghost.mode == GhostMode.DEAD and current_time >= ghost.dead_until:
                 ghost.mode = GhostMode.CHASE
-        # working on chasing logic until a super pacgum
         
         # Move ghosts only every 700 ms
         if game_started and current_time - last_ghost_move >= ghost_move:
@@ -147,10 +135,9 @@ def create_the_maze(
 
             for ghost in [blinky, inky]:
                 if ghost.mode == GhostMode.CHASE:
-                    chase_pacman(ghost, pacman, maze)
+                    chase_pacman(ghost, pacman, maze, ghosts)
                 elif ghost.mode == GhostMode.frightened:
                     walk_away(ghost, pacman, maze)
-
             for ghost in [pinky, clyde]:
                 if ghost.mode == GhostMode.CHASE:
                     move_ghost_randomly(ghost, maze)
@@ -172,6 +159,9 @@ def create_the_maze(
 
             elif ghost.mode == GhostMode.CHASE:
                 pacman.lives -= 1
+                got_eaten.play()
+                for ghost, _ in ghosts_data:
+                    respawn_ghosts(ghost, width, height)
                 print("Lives remaining:", pacman.lives)
 
                 (
@@ -197,36 +187,18 @@ def create_the_maze(
                     print("GAME OVER reached!", pacman.lives)
                     return "game_over"
 
-
-
     # ===== Allow Pacman to move to his next direction only if he's in the center of the current cell =====
-        at_cell_center = (
-            pacman_x == pacman.position.x * cell_size + cell_size // 2 - pacman_size // 2
-            and
-            pacman_y == pacman.position.y * cell_size + cell_size // 2 - pacman_size // 2
+        pacman.direction, game_started, next_direction = move_only_center(
+            pacman,
+            game_started,
+            pacman_x,
+            pacman_y,
+            cell_size,
+            pacman_size,
+            maze,
+            keys,
+            next_direction,
         )
-        if at_cell_center:
-            if next_direction is not None:
-                if maze.can_move(pacman.position, next_direction):
-                    pacman.direction = next_direction
-                    next_direction = None
-                    game_started = True
-            elif keys[pygame.K_RIGHT] or keys[pygame.K_d]:
-                game_started = True
-                if maze.can_move(pacman.position, Direction.EAST):
-                    pacman.direction = Direction.EAST
-            elif keys[pygame.K_LEFT] or keys[pygame.K_l]:
-                game_started = True
-                if maze.can_move(pacman.position, Direction.WEST):
-                    pacman.direction = Direction.WEST
-            elif keys[pygame.K_UP] or keys[pygame.K_w]:
-                game_started = True
-                if maze.can_move(pacman.position, Direction.NORTH):
-                    pacman.direction = Direction.NORTH
-            elif keys[pygame.K_DOWN] or keys[pygame.K_s]:
-                game_started = True
-                if maze.can_move(pacman.position, Direction.SOUTH):
-                    pacman.direction = Direction.SOUTH
         moving = False
         if maze.can_move(pacman.position, pacman.direction):
             moving = True
@@ -318,6 +290,7 @@ def create_the_maze(
         elapsed_seconds = (pygame.time.get_ticks() - start_time) // 1000
 
         if elapsed_seconds >= level["time"]:
+            fail_sound.play()
             print("Time Over!")
             return "game_over"
 
