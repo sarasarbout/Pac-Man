@@ -1,38 +1,9 @@
 import pygame
-from pygame.font import Font
 from src.parser.config_parser import GameConfig
-import json
-from pathlib import Path
+from src.model.highscores import load_scores
 
-PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
-def load_scores(config):
-    filename = Path(config.highscore_filename)
-
-    if not filename.is_absolute():
-        filename = PROJECT_ROOT / filename
-
-    if not filename.exists():
-        return []
-
-    try:
-        with filename.open("r", encoding = "utf-8") as file:
-            scores = json.load(file)
-
-        if not isinstance(scores, list):
-            return []
-
-        return sorted(
-            scores,
-            key=lambda entry: int(entry.get("score", 0)),
-            reverse=True,
-        )[:10]
-
-    except (OSError, json.JSONDecodeError, ValueError, TypeError):
-        return []
-
-    
-def highscores(config: GameConfig, screen) -> str:
+def highscores(config: GameConfig, screen: pygame.Surface) -> str:
     pygame.display.set_caption("High Scores")
 
     width, height = screen.get_size()
@@ -48,7 +19,6 @@ def highscores(config: GameConfig, screen) -> str:
     YELLOW = (255, 230, 0)
     CYAN = (100, 245, 255)
     WHITE = (255, 255, 255)
-    GREY = (120, 120, 120)
     BUTTON = (32, 32, 80)
     HOVER = (70, 70, 145)
 
@@ -88,7 +58,7 @@ def highscores(config: GameConfig, screen) -> str:
         title = title_font.render("HIGH SCORES", True, YELLOW)
 
         screen.blit(
-            title, 
+            title,
             title.get_rect(center=(width // 2, 75)),
         )
 
@@ -175,10 +145,3 @@ def highscores(config: GameConfig, screen) -> str:
 
         pygame.display.flip()
         clock.tick(60)
-
-
-
-                
-    
-
-

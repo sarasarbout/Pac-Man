@@ -1,32 +1,105 @@
+from dataclasses import dataclass
 import pygame
-from src.model.ghost import GhostMode, GhostName
+from src.model.ghost import Ghost, GhostMode, GhostName
 from src.model.direction import Direction
 from src.model.position import Position
+from src.model.maze import Maze
+from src.model.pacman import Pacman
 import heapq
 from itertools import count
 from pathlib import Path
 import random
+from typing import Optional
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 ASSETS_DIR = PROJECT_ROOT / "assets"
 
 
-def draw_ghosts(rows, width, height, screen, cell_size, ghosts_data) -> None:
-    ghost_size = 30
+@dataclass(frozen=True)
+class GhostAnimation:
+    start_x: float
+    start_y: float
+    end_x: float
+    end_y: float
+    started_at: int
+    duration: int
+
+    @classmethod
+    def stationary(
+        cls, position: Position, started_at: int
+    ) -> "GhostAnimation":
+        return cls(
+            position.x,
+            position.y,
+            position.x,
+            position.y,
+            started_at,
+            1,
+        )
+
+    @classmethod
+    def between(
+        cls,
+        start: Position,
+        end: Position,
+        started_at: int,
+        duration: int,
+    ) -> "GhostAnimation":
+        return cls(
+            start.x,
+            start.y,
+            end.x,
+            end.y,
+            started_at,
+            duration,
+        )
+
+    def position_at(self, now: int) -> tuple[float, float]:
+        progress = min(1.0, max(0.0, (now - self.started_at) / self.duration))
+        return (
+            self.start_x + (self.end_x - self.start_x) * progress,
+            self.start_y + (self.end_y - self.start_y) * progress,
+        )
+
+
+def draw_ghosts(
+    screen: pygame.Surface,
+    cell_size: int,
+    ghosts_data: list[tuple[Ghost, Path]],
+    animations: dict[Ghost, GhostAnimation],
+    current_time: int,
+) -> None:
     for ghost, image_path in ghosts_data:
         if ghost.mode == GhostMode.frightened:
             image_path = ASSETS_DIR / "ghosts" / "blue_ghost.png"
             image = pygame.image.load(image_path)
         else:
             image = pygame.image.load(image_path)
-        image = pygame.transform.scale(image, (ghost_size, ghost_size))
-        x = ghost.position.x * cell_size + (cell_size - ghost_size) // 2
-        y = ghost.position.y * cell_size + (cell_size - ghost_size) // 2
+        ghost_bounds = ghost_rect(
+            animations[ghost],
+            cell_size,
+            current_time,
+        )
+        image = pygame.transform.scale(
+            image,
+            ghost_bounds.size,
+        )
+        screen.blit(image, ghost_bounds)
 
-        screen.blit(image, (x, y))
+
+def ghost_rect(
+    animation: GhostAnimation,
+    cell_size: int,
+    current_time: int,
+) -> pygame.Rect:
+    ghost_size = max(1, int(cell_size * 0.6))
+    grid_x, grid_y = animation.position_at(current_time)
+    x = round(grid_x * cell_size + (cell_size - ghost_size) / 2)
+    y = round(grid_y * cell_size + (cell_size - ghost_size) / 2)
+    return pygame.Rect(x, y, ghost_size, ghost_size)
 
 
-def heuristic(position, goal):
+def heuristic(position: tuple[int, int], goal: tuple[int, int]) -> int:
     """Estimate the distance to the goal using Manhattan distance."""
     return (
         abs(position[0] - goal[0])
@@ -34,83 +107,103 @@ def heuristic(position, goal):
     )
 
 
-def find_path_astar(start, goal, maze):
+def find_path_astar(
+    start: Position, goal: Position, maze: Maze
+) -> list[Direction]:
     """
-    Return a list of directions from start to goal.
-    Return [] if no path exists.
+    Find the shortest route from start to goal using A* search.
+
+    The route is returned as directions. An empty list means the start is
+    already at the goal or no route is available.
     """
+    start_cell = (start.x, start.y)
+    goal_cell = (goal.x, goal.y)
 
-    start = (start.x, start.y)
-    goal = (goal.x, goal.y)
-
-    if start == goal:
+    if start_cell == goal_cell:
         return []
 
     directions = [
-        Direction.NORTH,
-        Direction.EAST,
-        Direction.SOUTH,
-        Direction.WEST,
-    ]
-    occupied_paths = []
-
-    counter = count()
-    open_set = [
-        (heuristic(start, goal), next(counter), start)
+        (Direction.NORTH, (0, -1)),
+        (Direction.EAST, (1, 0)),
+        (Direction.SOUTH, (0, 1)),
+        (Direction.WEST, (-1, 0)),
     ]
 
-    g_score = {start: 0}
-    came_from = {}
+    # The frontier holds cells that still need to be checked.
+    # Each entry is (estimated total distance, insertion order, cell).
+    insertion_order = count()
+    frontier: list[tuple[int, int, tuple[int, int]]] = []
+    first_estimate = heuristic(start_cell, goal_cell)
+    heapq.heappush(
+        frontier, (first_estimate, next(insertion_order), start_cell)
+    )
 
-    while open_set:
-        _, _, current = heapq.heappop(open_set)
+    # Remember the shortest distance found so far to each cell.
+    distance_from_start: dict[tuple[int, int], int] = {
+        start_cell: 0
+    }
 
-        if current == goal:
-            path = []
+    # Remember how we reached each cell to build the route at the end.
+    previous_step: dict[
+        tuple[int, int], tuple[tuple[int, int], Direction]
+    ] = {}
 
-            while current != start:
-                previous, direction = came_from[current]
+    while frontier:
+        _, _, current_cell = heapq.heappop(frontier)
+
+        if current_cell == goal_cell:
+            # Follow the recorded steps backwards, then reverse the route.
+            path: list[Direction] = []
+            cell = current_cell
+
+            while cell != start_cell:
+                previous_cell, direction = previous_step[cell]
                 path.append(direction)
-                current = previous
+                cell = previous_cell
 
             path.reverse()
             return path
 
-        current_position = Position(*current)
+        current_position = Position(*current_cell)
 
-        for direction in directions:
+        for direction, (step_x, step_y) in directions:
             if not maze.can_move(current_position, direction):
                 continue
 
-            if direction == Direction.NORTH:
-                neighbor = (current[0], current[1] - 1)
-            elif direction == Direction.EAST:
-                neighbor = (current[0] + 1, current[1])
-            elif direction == Direction.SOUTH:
-                neighbor = (current[0], current[1] + 1)
-            else:
-                neighbor = (current[0] - 1, current[1])
-
-            tentative_g = g_score[current] + 1
-
-            if tentative_g < g_score.get(
+            neighbor = (
+                current_cell[0] + step_x,
+                current_cell[1] + step_y,
+            )
+            tentative_distance = distance_from_start[current_cell] + 1
+            best_known_distance = distance_from_start.get(
                 neighbor, float("inf")
-            ):
-                g_score[neighbor] = tentative_g
-                came_from[neighbor] = (current, direction)
+            )
 
-                f_score = (
-                    tentative_g + heuristic(neighbor, goal)
+            if tentative_distance < best_known_distance:
+                distance_from_start[neighbor] = tentative_distance
+                previous_step[neighbor] = (current_cell, direction)
+
+                # Prefer cells that are close so far and look close to the
+                # goal.
+                estimate_to_goal = heuristic(neighbor, goal_cell)
+                estimated_total_distance = (
+                    tentative_distance + estimate_to_goal
                 )
-
                 heapq.heappush(
-                    open_set,
-                    (f_score, next(counter), neighbor)
+                    frontier,
+                    (
+                        estimated_total_distance,
+                        next(insertion_order),
+                        neighbor,
+                    ),
                 )
+
     return []
 
 
-def chase_pacman(ghost, pacman, maze, ghosts) -> None:
+def chase_pacman(
+    ghost: Ghost, pacman: Pacman, maze: Maze, ghosts: list[Ghost]
+) -> Optional[list[Direction]]:
     path = find_path_astar(
         ghost.position,
         pacman.position,
@@ -118,14 +211,12 @@ def chase_pacman(ghost, pacman, maze, ghosts) -> None:
     )
 
     if not path:
-        return
+        return None
     occupied_positions = {
         other.position
         for other in ghosts
         if other != ghost and other.mode != GhostMode.DEAD
     }
-   
-
     chosen_direction = path[0]
 
     if chosen_direction == Direction.NORTH:
@@ -145,11 +236,13 @@ def chase_pacman(ghost, pacman, maze, ghosts) -> None:
             ghost.position.x - 1, ghost.position.y
         )
     if next_position in occupied_positions:
-            return []
+        return []
     ghost.position = next_position
     ghost.direction = chosen_direction
+    return None
 
-def walk_away(ghost, pacman, maze) -> None:
+
+def walk_away(ghost: Ghost, pacman: Pacman, maze: Maze) -> None:
     possible_moves = [
         direction
         for direction in
@@ -193,7 +286,7 @@ def walk_away(ghost, pacman, maze) -> None:
     ghost.direction = chosen_direction
 
 
-def move_ghost_randomly(ghost, maze) -> None:
+def move_ghost_randomly(ghost: Ghost, maze: Maze) -> None:
     directions = [
         Direction.NORTH,
         Direction.EAST,
@@ -231,7 +324,7 @@ def move_ghost_randomly(ghost, maze) -> None:
     ghost.direction = chosen_direction
 
 
-def respawn_ghosts(ghost, width, height) -> None:
+def respawn_ghosts(ghost: Ghost, width: int, height: int) -> Position:
     if ghost.name == GhostName.BLINKY:
         ghost.position = Position(1, 0)
     elif ghost.name == GhostName.CLYDE:

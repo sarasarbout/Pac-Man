@@ -1,5 +1,4 @@
 from src.model.direction import Direction
-from enum import Enum
 from src.model.position import Position
 
 
@@ -8,7 +7,7 @@ class Cell:
         self.walls = walls
 
     def has_wall(self, direction: Direction) -> bool:
-        return (self.walls & direction.value) != 0
+        return bool((self.walls & direction.value) != 0)
 
 
 class Pacgum:

@@ -1,74 +1,117 @@
 import pygame
-from pathlib import Path
+from src.model.pacman import Pacman
+from src.parser.config_parser import GameConfig
 
-PROJECT_ROOT = Path(__file__).resolve().parents[2]
-ASSETS_DIR = PROJECT_ROOT / "assets"
+
+HUD_HEIGHT = 110
+BUTTON_HEIGHT = 32
+
+
+def get_hud_button_rects(
+    screen: pygame.Surface,
+) -> tuple[pygame.Rect, pygame.Rect]:
+    """Calculate the HUD button positions without drawing anything."""
+    width = screen.get_width()
+    height = screen.get_height()
+
+    button_width = 125
+    pause_width = 90
+    gap = 12
+
+    total_width = button_width + gap + pause_width
+    start_x = (width - total_width) // 2
+    button_y = height - HUD_HEIGHT + 68
+
+    cheats_rect = pygame.Rect(
+        start_x, button_y, button_width, BUTTON_HEIGHT
+    )
+
+    pause_rect = pygame.Rect(
+        cheats_rect.right + gap, button_y,
+        pause_width, BUTTON_HEIGHT
+    )
+
+    return pause_rect, cheats_rect
+
+
+def draw_hud_button(
+    screen: pygame.Surface,
+    rect: pygame.Rect,
+    text: str,
+    font: pygame.font.Font,
+    color: tuple[int, int, int],
+) -> None:
+    pygame.draw.rect(screen, color, rect, border_radius=8)
+
+    button_text = font.render(text, True, (255, 255, 255))
+    screen.blit(button_text, button_text.get_rect(center=rect.center))
+
 
 def hud_menu(
     screen: pygame.Surface,
-    pacman,
-    elapsed_seconds,
-    level_index,
-    config,
-    game_started,
-) -> None:
-    hud_height = 100
-    margin_x = 4
+    pacman: Pacman,
+    elapsed_seconds: int,
+    level_index: int,
+    config: GameConfig,
+    game_started: bool,
+) -> tuple[pygame.Rect, pygame.Rect]:
+    width = screen.get_width()
+    height = screen.get_height()
 
-    # ===== Score button =====
-    button_score = pygame.Rect(
-        margin_x,
-        screen.get_height() - hud_height,
-        screen.get_width() - 2 * margin_x,
-        hud_height,
+    hud_rect = pygame.Rect(
+        0, height - HUD_HEIGHT, width, HUD_HEIGHT
     )
-    score_font = pygame.font.Font(None, 32)
-    score_text = score_font.render(
-        f"Score: {pacman.score}", True, "White"
-    )
-    text1_x = button_score.x + 30
-    text1_y = button_score.y + (
-        button_score.height - score_text.get_height()
-    ) // 2
 
-    screen.blit(score_text, (text1_x, text1_y))
+    pygame.draw.rect(screen, (15, 15, 35), hud_rect)
 
+    info_font = pygame.font.Font(None, 27)
 
-    # ===== Level button =====
     level_time = config.levels[level_index]["time"]
     level_value = level_index + 1
-    level_font = pygame.font.Font(None, 32)
-    level_text = level_font.render(f"Level: {level_value}", True, "White")
-    level_x = button_score.right - level_text.get_width() - 30
-    level_y = button_score.y + 10
-    screen.blit(level_text, (level_x, level_y))
 
-
-
-    # ===== Lives button =====
-    lives_font = pygame.font.Font(None, 32)
-    lives_text = lives_font.render(
-        f"Lives: {pacman.lives}", True, "White"
+    remaining_seconds = (
+        max(0, level_time - elapsed_seconds)
+        if game_started
+        else level_time
     )
-    text2_x = button_score.right - lives_text.get_width() - 30
-    text2_y = button_score.y + (
-        button_score.height - lives_text.get_height()
-    ) // 2
-    screen.blit(lives_text, (text2_x, text2_y))
 
+    information = [
+        f"Score: {pacman.score}",
+        f"Level: {level_value}",
+        f"Lives: {pacman.lives}",
+        f"Time: {remaining_seconds}s",
+    ]
 
-    # ===== Time button =====
-    remaining_seconds = max(0, level_time - elapsed_seconds) \
-        if game_started else level_time
+    column_width = width / 4
+    info_y = height - HUD_HEIGHT + 25
 
-    time_font = pygame.font.Font(None, 32)
-    time_text = time_font.render(
-        f"Time: {remaining_seconds}s", True, "White"
+    for index, text in enumerate(information):
+        text_surface = info_font.render(text, True, (255, 255, 255))
+        text_rect = text_surface.get_rect(
+            center=(
+                int(column_width * (index + 0.5)),
+                info_y,
+            )
+        )
+        screen.blit(text_surface, text_rect)
+
+    pause_rect, cheats_rect = get_hud_button_rects(screen)
+    button_font = pygame.font.Font(None, 23)
+
+    draw_hud_button(
+        screen,
+        cheats_rect,
+        "CHEATS (F1)",
+        button_font,
+        (53, 53, 120),
     )
-    text3_x = button_score.centerx - time_text.get_width() // 2
-    text3_y = button_score.y + (
-        button_score.height - time_text.get_height()
-    ) // 2
 
-    
-    screen.blit(time_text, (text3_x, text3_y))
+    draw_hud_button(
+        screen,
+        pause_rect,
+        "PAUSE",
+        button_font,
+        (180, 120, 30),
+    )
+
+    return pause_rect, cheats_rect

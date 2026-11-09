@@ -1,10 +1,17 @@
 import pygame
 from src.model.pacman import Pacman
+from src.model.cell import Pacgum
+from src.parser.config_parser import GameConfig
 
 
 def create_super_pacgums(
-    width: int, height: int, cell_size: int, screen, pacman: Pacman,
-    super_pacgums, config
+    width: int,
+    height: int,
+    cell_size: int,
+    screen: pygame.Surface,
+    pacman: Pacman,
+    super_pacgums: set[Pacgum],
+    config: GameConfig,
 ) -> bool:
 
     eaten = False
@@ -22,6 +29,6 @@ def create_super_pacgums(
             screen,
             (255, 255, 255),
             (x, y),
-            10
+            max(1, cell_size // 5)
         )
     return eaten

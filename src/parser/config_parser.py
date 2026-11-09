@@ -12,29 +12,26 @@ class ConfigError(Exception):
 @dataclass
 class GameConfig:
     """Store validated configuration values for the game."""
-    screen_width: int = 600
-    screen_height: int = 400
+    screen_width: int = 1000
+    screen_height: int = 1000
 
     highscore_filename: str = "highscores.json"
     lives: int = 3
-    level_max_time: int = 90
 
     points_per_pacgum: int = 10
     points_per_super_pacgum: int = 50
     points_per_ghost: int = 200
-    cell_size: int = 50
-
     levels: list[dict[str, Any]] = field(default_factory=lambda: [
         {"width": 21, "height": 17, "pacgum": 42, "seed": 42},
-        {"width": 23, "height": 17, "pacgum": 48, "seed": None},
-        {"width": 25, "height": 19, "pacgum": 54, "seed": None},
-        {"width": 25, "height": 19, "pacgum": 55, "seed": None},
-        {"width": 27, "height": 21, "pacgum": 60, "seed": None},
-        {"width": 29, "height": 21, "pacgum": 66, "seed": None},
-        {"width": 31, "height": 23, "pacgum": 72, "seed": None},
-        {"width": 31, "height": 23, "pacgum": 73, "seed": None},
-        {"width": 33, "height": 25, "pacgum": 78, "seed": None},
-        {"width": 35, "height": 25, "pacgum": 84, "seed": None},
+        {"width": 23, "height": 17, "pacgum": 48, "seed": 0},
+        {"width": 25, "height": 19, "pacgum": 54, "seed": 0},
+        {"width": 25, "height": 19, "pacgum": 55, "seed": 0},
+        {"width": 27, "height": 21, "pacgum": 60, "seed": 0},
+        {"width": 29, "height": 21, "pacgum": 66, "seed": 0},
+        {"width": 31, "height": 23, "pacgum": 72, "seed": 0},
+        {"width": 31, "height": 23, "pacgum": 73, "seed": 0},
+        {"width": 33, "height": 25, "pacgum": 78, "seed": 0},
+        {"width": 35, "height": 25, "pacgum": 84, "seed": 0},
     ])
 
 
@@ -112,13 +109,36 @@ class ConfigParser:
 
         return data
 
+    def _normalize_keys(self, data: Any) -> Any:
+        """Convert all configuration dictionary keys to lowercase."""
+
+        if isinstance(data, dict):
+            normalized = {}
+
+            for key, value in data.items():
+                new_key = key.lower()
+
+                if new_key in normalized:
+                    raise ConfigError(
+                        f"Duplicate configuration key: '{key}'"
+                    )
+
+                normalized[new_key] = self._normalize_keys(value)
+
+            return normalized
+
+        if isinstance(data, list):
+            return [self._normalize_keys(item) for item in data]
+
+        return data
+
     def _check_keys(self, data: dict[str, Any]) -> None:
         """Warn about unknown configuration keys."""
 
         known_keys = {item.name for item in fields(GameConfig)}
 
         for key in data:
-            if key not in known_keys:
+            if key.lower() not in known_keys:
                 print(
                     f"Warning: unknown configuration key '{key}' "
                     f"will be ignored."
@@ -307,8 +327,6 @@ class ConfigParser:
                 "Using seed 42."
             )
             parsed_levels[0]["seed"] = 42
-        
-
         return parsed_levels
 
     def _build_config(self, data: dict[str, Any]) -> GameConfig:
@@ -320,12 +338,12 @@ class ConfigParser:
                 data,
                 "screen_height",
                 default.screen_height,
-                minimum=750),
+                minimum=400),
             screen_width=self._parse_integer(
                 data,
                 "screen_width",
                 default.screen_width,
-                minimum=750
+                minimum=600
             ),
             highscore_filename=self._parse_string(
                 data,
@@ -337,13 +355,6 @@ class ConfigParser:
                 "lives",
                 default.lives,
                 minimum=1
-            ),
-
-            level_max_time=self._parse_integer(
-                data,
-                "level_max_time",
-                default.level_max_time,
-                minimum=10
             ),
 
             points_per_pacgum=self._parse_integer(
@@ -381,6 +392,7 @@ class ConfigParser:
         content = self._remove_comments(content)
 
         data = self._decode_json(content)
+        data = self._normalize_keys(data)
 
         self._check_keys(data)
 

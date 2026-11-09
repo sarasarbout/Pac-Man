@@ -1,7 +1,6 @@
 from src.model.cell import Cell
 from src.model.direction import Direction
 from src.model.position import Position
-from src.mazegenerator.mazegenerator import MazeGenerator
 
 
 class Maze:
@@ -16,7 +15,7 @@ class Maze:
         return self.cells[position.y][position.x]
 
     def has_wall(self, position: Position, direction: Direction) -> bool:
-        return self.get_cell(position).has_wall(direction)
+        return bool(self.get_cell(position).has_wall(direction))
 
     def can_move(self, position: Position, direction: Direction) -> bool:
         if self.has_wall(position, direction):

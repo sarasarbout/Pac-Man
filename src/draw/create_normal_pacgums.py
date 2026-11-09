@@ -1,21 +1,25 @@
 from src.model.pacman import Pacman
 from src.model.position import Position
 from src.model.cell import Pacgum
-from typing import List
 import random
+from src.parser.config_parser import GameConfig
 
 
-def create_normal_pacgums(pacman: Pacman, rows, level_index, config) -> List[Pacgum]:
+def create_normal_pacgums(
+        pacman: Pacman, rows: list[list[int]], level_index: int,
+        config: GameConfig
+) -> set[Pacgum]:
     normal_pacgums = set()
-    width = len(rows[0])
+    width = int(len(rows[0]))
     height = len(rows)
 
     pacgums_number = config.levels[level_index]["pacgum"]
+
     super_pacgums = {
-        Pacgum(Position(0, 0)),
-        Pacgum(Position(width - 1, 0)),
-        Pacgum(Position(0, height - 1)),
-        Pacgum(Position(width - 1, height - 1))
+        Position(0, 0),
+        Position(width - 1, 0),
+        Position(0, height - 1),
+        Position(width - 1, height - 1)
     }
     eligible_cells = []
 
@@ -25,7 +29,7 @@ def create_normal_pacgums(pacman: Pacman, rows, level_index, config) -> List[Pac
                 continue
 
             position = Position(column, row)
-    
+
             if pacman.position == position:
                 continue
 
@@ -35,7 +39,8 @@ def create_normal_pacgums(pacman: Pacman, rows, level_index, config) -> List[Pac
             eligible_cells.append(position)
 
     if pacgums_number > len(eligible_cells):
-        raise ValueError("Not enough eligible cells for Pac-Gums")
+        pacgums_number = len(eligible_cells)
+        print("Warning: fallback to the eligible_cells!")
 
     selected_cells = random.sample(eligible_cells, pacgums_number)
 

@@ -2,8 +2,10 @@ import pygame
 from pygame.font import Font
 from src.parser.config_parser import GameConfig
 from pathlib import Path
+from src.ui.cheat_menu import CheatState, cheat_menu
 
-# generate.py is in project_root/src/draw/
+
+"""generate.py is in project_root/src/draw/"""
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 ASSETS_DIR = PROJECT_ROOT / "assets"
 
@@ -23,13 +25,10 @@ def draw_text(
 
 def main_menu(
     config: GameConfig,
-    screen: pygame.Surface
-) -> str:
-
+    screen: pygame.Surface,
+    cheats: CheatState,
+) -> tuple[str, CheatState]:
     intro = False
-    WIDTH = config.screen_width
-    HEIGHT = config.screen_height
-
     pygame.display.set_caption("Main Menu")
     clock = pygame.time.Clock()
 
@@ -37,61 +36,95 @@ def main_menu(
     BUTTON_COLOR = ("Blue")
     HOVER_COLOR = (100, 200, 100)
 
-    bg_img = pygame.image.load(
+    background_image = pygame.image.load(
         ASSETS_DIR / "main_menu.png"
     ).convert()
     intro_sound = pygame.mixer.Sound(ASSETS_DIR / "sounds" / "intro.mp3")
-    bg_img = pygame.transform.scale(
-        bg_img, (WIDTH, HEIGHT)
-    )
 
-    logo_img = pygame.image.load(
+    logo_image = pygame.image.load(
         ASSETS_DIR / "pacman_logo.png"
     ).convert_alpha()
 
-    logo_img = pygame.transform.scale(logo_img, (300, 120))
+    def layout_for(
+        current_screen: pygame.Surface,
+    ) -> tuple[
+        int,
+        int,
+        pygame.Surface,
+        pygame.Surface,
+        list[tuple[pygame.Rect, str, str]],
+        Font,
+    ]:
+        width, height = current_screen.get_size()
+        background = pygame.transform.scale(
+            background_image, (width, height)
+        )
+        logo = pygame.transform.scale(
+            logo_image,
+            (min(300, max(1, width - 40)), min(120, max(1, height // 4))),
+        )
+        button_width = max(1, min(300, width - 40))
+        button_height = max(1, min(50, height // 12))
+        button_x = (width - button_width) // 2
+        pygame.font.init()
+        font = pygame.font.SysFont(
+            "Arial",
+            max(1, min(32, button_height - 8, button_width // 8)),
+        )
+        buttons = [
+            (
+                pygame.Rect(
+                    button_x,
+                    int(height * fraction),
+                    button_width,
+                    button_height,
+                ),
+                label,
+                state,
+            )
+            for fraction, label, state in (
+                (0.42, "Start Game", "playing"),
+                (0.54, "View Highscores", "highscores"),
+                (0.66, "Instructions", "instructions"),
+                (0.78, "Exit", "exit"),
+            )
+        ]
+        return width, height, background, logo, buttons, font
 
-    font = pygame.font.SysFont("Arial", 32)
-
-    button_width = 300
-    button_height = 50
-    button_x = (WIDTH - button_width) // 2
-
-    # Position the buttons relative to the window height.
-    button_positions = [
-        int(HEIGHT * 0.42),
-        int(HEIGHT * 0.54),
-        int(HEIGHT * 0.66),
-        int(HEIGHT * 0.78)
-    ]
-
-    start_button = pygame.Rect(
-        button_x, button_positions[0], button_width, button_height
+    WIDTH, HEIGHT, bg_img, logo_img, buttons, font = layout_for(
+        screen
     )
-    highscores_button = pygame.Rect(
-        button_x, button_positions[1], button_width, button_height
-    )
-    instructions_button = pygame.Rect(
-        button_x, button_positions[2], button_width, button_height
-    )
-    exit_button = pygame.Rect(
-        button_x, button_positions[3], button_width, button_height
-    )
 
-    buttons = [
-        (start_button, "Start Game", "playing"),
-        (highscores_button, "View Highscores", "highscores"),
-        (instructions_button, "Instructions", "instructions"),
-        (exit_button, "Exit", "exit")
-    ]
+    cheats = {
+        "Invincibility": False,
+        "Freeze Ghosts": False,
+        "Speed Boost": False,
+        "Speed Multiplier": 1.5
+    }
 
     while True:
         mouse_pos = pygame.mouse.get_pos()
         if not intro:
             intro_sound.play()
         for event in pygame.event.get():
+            if event.type == pygame.VIDEORESIZE:
+                screen = pygame.display.get_surface()
+                config.screen_width, config.screen_height = event.size
+                WIDTH, HEIGHT, bg_img, logo_img, buttons, font = layout_for(
+                    screen
+                )
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_F1:
+                    intro_sound.stop()
+                    action, cheats = cheat_menu(screen, cheats)
+
+                    if action == "exit":
+                        return "exit", cheats
+                    intro = True
+                    intro_sound.play(-1)
+
             if event.type == pygame.QUIT:
-                return "exit"
+                return "exit", cheats
 
             if (
                 event.type == pygame.MOUSEBUTTONDOWN
@@ -101,12 +134,16 @@ def main_menu(
                     for button, label, next_state in buttons:
                         if button.collidepoint(event.pos):
                             intro_sound.stop()
-                            return next_state
+                            return next_state, cheats
 
         screen.blit(bg_img, (0, 0))
 
-        # Cheat mode instruction
-        hint_font = pygame.font.SysFont("Arial", 24, bold=True)
+        """Cheat mode instruction"""
+        hint_font = pygame.font.SysFont(
+            "Arial",
+            max(12, min(24, HEIGHT // 24, WIDTH // 35)),
+            bold=True,
+        )
 
         hint_text = "F1 - CHEAT MODE"
         hint_surface = hint_font.render(
@@ -117,19 +154,44 @@ def main_menu(
             bottomright=(WIDTH - 25, HEIGHT - 25)
         )
 
-        # Dark background behind the text
+        """ Dark background behind the text"""
         panel = hint_rect.inflate(30, 18)
         pygame.draw.rect(
             screen, (5, 5, 35), panel, border_radius=10
         )
 
-        # Blue border for the Pac-Man theme
+        """Blue border for the Pac-Man theme"""
         pygame.draw.rect(
             screen, (0, 70, 255), panel, width=2, border_radius=10
         )
 
         screen.blit(hint_surface, hint_rect)
-        
+
+        hint_font = pygame.font.SysFont(
+            "Arial",
+            max(12, min(24, HEIGHT // 24, WIDTH // 35)),
+            bold=True,
+        )
+
+        hint_text = "F1 - CHEAT MODE"
+        hint_surface = hint_font.render(
+            hint_text, True, (255, 230, 0)
+        )
+
+        hint_rect = hint_surface.get_rect(
+            bottomright=(WIDTH - 25, HEIGHT - 25)
+        )
+
+        panel = hint_rect.inflate(30, 18)
+        pygame.draw.rect(
+            screen, (5, 5, 35), panel, border_radius=10
+        )
+
+        pygame.draw.rect(
+            screen, (0, 70, 255), panel, width=2, border_radius=10
+        )
+
+        screen.blit(hint_surface, hint_rect)
 
         logo_rect = logo_img.get_rect(
             center=(WIDTH // 2, int(HEIGHT * 0.16))

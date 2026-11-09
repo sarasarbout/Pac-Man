@@ -1,4 +1,5 @@
 from src.model.position import Position
+from src.model.direction import Direction
 from enum import Enum
 
 
@@ -26,6 +27,7 @@ class Ghost:
     def __init__(self, position: Position, name: GhostName):
         self.position = position
         self.mode = GhostMode.CHASE
+        self.direction: Direction = Direction.NONE
         self.name = name
         self.frightened_until = 0
         self.x = position.x * 50

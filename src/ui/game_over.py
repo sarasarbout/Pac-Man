@@ -1,44 +1,14 @@
-
-import json
 import pygame
-from pathlib import Path
+from src.model.highscores import (
+    MAX_PLAYER_NAME_LENGTH,
+    save_score,
+)
+from src.parser.config_parser import GameConfig
 
 
-PROJECT_ROOT = Path(__file__).resolve().parents[2]
-
-
-def save_score(config, player_name: str, final_score: int) -> None:
-    """Save the player's name and score to the highscores JSON file."""
-
-    filename = Path(config.highscore_filename)
-
-    if not filename.is_absolute():
-        filename = PROJECT_ROOT / filename
-
-    if filename.exists():
-        try:
-            with filename.open("r", encoding="utf-8") as file:
-                scores = json.load(file)
-
-            if not isinstance(scores, list):
-                scores = []
-        except (json.JSONDecodeError, OSError):
-            scores = []
-    else:
-        scores = []
-
-    scores.append({
-        "name": player_name,
-        "score": final_score,
-    })
-
-    scores.sort(key=lambda entry: entry["score"], reverse=True)
-
-    with filename.open("w", encoding="utf-8") as file:
-        json.dump(scores, file, indent=4, ensure_ascii=False)
-
-
-def game_over(config, screen, final_score: int) -> str:
+def game_over(
+    config: GameConfig, screen: pygame.Surface, final_score: int
+) -> str:
     """Display Game Over, collect the player's name, and save the score."""
 
     pygame.display.set_caption("Game Over")
@@ -55,7 +25,6 @@ def game_over(config, screen, final_score: int) -> str:
     hover_color = (80, 80, 140)
 
     player_name = ""
-    max_name_length = 16
     message = ""
 
     input_rect = pygame.Rect(
@@ -115,7 +84,7 @@ def game_over(config, screen, final_score: int) -> str:
                                     player_name.strip(),
                                     final_score,
                                 )
-                            except OSError as error:
+                            except (OSError, ValueError) as error:
                                 message = f"Could not save score: {error}"
                             else:
                                 return "main_menu"
@@ -123,12 +92,10 @@ def game_over(config, screen, final_score: int) -> str:
                             message = "Please enter your name."
 
                     elif (
-                        event.unicode.isprintable()
-                        and not event.unicode.isspace()
-                        or event.unicode == " "
+                        len(player_name) < MAX_PLAYER_NAME_LENGTH
+                        and (event.unicode.isalnum() or event.unicode == " ")
                     ):
-                        if len(player_name) < max_name_length:
-                            player_name += event.unicode
+                        player_name += event.unicode
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
@@ -140,7 +107,7 @@ def game_over(config, screen, final_score: int) -> str:
                                     player_name.strip(),
                                     final_score,
                                 )
-                            except OSError as error:
+                            except (OSError, ValueError) as error:
                                 message = f"Could not save score: {error}"
                             else:
                                 return "main_menu"

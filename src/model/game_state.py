@@ -3,8 +3,6 @@ if TYPE_CHECKING:
     from src.model.pacman import Pacman
 from enum import Enum
 from src.model.ghost import Ghost
-from src.game.collision import Collision
-from src.model.ghost import GhostMode
 
 
 class GameStatus(Enum):

@@ -4,8 +4,7 @@ from src.parser.config_parser import GameConfig
 from pathlib import Path
 
 
-
-# generate.py is in project_root/src/draw/
+"""generate.py is in project_root/src/draw/"""
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 ASSETS_DIR = PROJECT_ROOT / "assets"
 
@@ -23,11 +22,12 @@ def draw_text(
     surface.blit(text_obj, text_rect)
 
 
-##Resume the game - Allows the player to return to the ongoing game.
-##Return to the main menu - Allows the player to exit the current game and go
-##back to the main menu.
+"""Resume the game - Allows the player to return to the ongoing game."""
+"""Return to the main menu - Allows the player to exit the current game"""
+"""and go back to the main menu."""
 
-def pause_menu(config: GameConfig, screen) -> str:
+
+def pause_menu(config: GameConfig, screen: pygame.Surface) -> str:
     WIDTH = config.screen_width
     HEIGHT = config.screen_height
 
@@ -86,17 +86,21 @@ def pause_menu(config: GameConfig, screen) -> str:
                 for button, label, next_state in buttons:
                     if button .collidepoint(event.pos):
                         return next_state
-        # screen.blit(bg_img, (0, 0))
 
         logo_rect = logo_img.get_rect(
             center=(WIDTH // 2, int(HEIGHT * 0.16))
         )
 
-        screen.blit(logo_img, logo_rect)
-
+        """Dark overlay over the frozen gameplay screen"""
         overlay = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
         overlay.fill((0, 0, 0, 160))
         screen.blit(overlay, (0, 0))
+
+        """Draw logo after the overlay"""
+        logo_rect = logo_img.get_rect(
+            center=(WIDTH//2, int(HEIGHT * 0.16))
+        )
+        screen.blit(logo_img, logo_rect)
 
         for button, label, next_state in buttons:
             color = (
@@ -110,7 +114,7 @@ def pause_menu(config: GameConfig, screen) -> str:
             )
 
             draw_text(
-                label, 
+                label,
                 font,
                 WHITE,
                 screen,
